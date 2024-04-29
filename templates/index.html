@@ -24,6 +24,13 @@
                         var option = $('<option></option>').attr("value", value);
                         dataList.append(option);
                     });
+
+                    // Check if the current value of the input field is one of the suggestions
+                    var isSuggestion = data.includes(inputVal);
+                    if (isSuggestion) {
+                        // Redirect to the description route with the inputVal parameter
+                        window.location.href = '/description&Mod_name=' + inputVal;
+                    }
                 }
             });
         });
