@@ -1,9 +1,16 @@
 ﻿body {
+    font-family: Arial, sans-serif;
+    background-color: #9c9c9c;
+    margin: 0;
+    padding: 0;
+}
+
+body.page-index {
     background-image: url('placeholder.jpg');
     background-size: cover;
     background-repeat: no-repeat;
-    z-index: 0; /* Pour s'assurer que le voile est placé sous le contenu */
 }
+
 h1 {
     text-align: center;
     margin-top: 50px;
