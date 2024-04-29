@@ -4,11 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Recommender</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $("input[name='anime']").on('input', function() {
+            var inputVal = $(this).val();
+            $.ajax({
+                url: "/autocomplete",
+                type: "GET",
+                dataType: "json",
+                data: { term: inputVal },
+                success: function(data) {
+                    var dataList = $('#anime-suggestions');
+                    dataList.empty(); // Clear previous suggestions
+                    $.each(data, function(key, value) {
+                        var option = $('<option></option>').attr("value", value);
+                        dataList.append(option);
+                    });
+                }
+            });
+        });
+    });
+    </script>
 </head>
 <body>
     <h1>Anime Recommender</h1>
     <form action="/recommend" method="post">
-        <input type="text" name="anime" placeholder="Enter anime name">
+        <input type="text" name="anime" placeholder="Enter anime name" list="anime-suggestions">
+        <datalist id="anime-suggestions">
+            <!-- Suggestions will be dynamically filled here -->
+        </datalist>
         <button type="submit">Recommend</button>
     </form>
 </body>

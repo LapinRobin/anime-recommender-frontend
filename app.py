@@ -1,6 +1,19 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+import re
 
 app = Flask(__name__)
+
+
+# Load the data
+anime_parquet = pd.read_parquet('static/parquet/anime.parquet')
+
+# Create a TF-IDF Vectorizer
+vectorizer = TfidfVectorizer()
+tfidf = vectorizer.fit_transform(anime_parquet['Mod_name'])
 
 # Route to display the initial form, should handle GET to display the form, and optionally POST if submitting to the same endpoint
 @app.route('/', methods=['GET', 'POST'])
@@ -24,6 +37,23 @@ def get_recommendations(anime_name):
 @app.route('/list')
 def list():
     return render_template('list.html')
+
+
+
+
+@app.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    query = request.args.get('term', '')
+    print(query)
+    processed_query = re.sub("[^a-zA-Z0-9 ]", "", query.lower())
+    query_vec = vectorizer.transform([processed_query])
+    cosine_sim = cosine_similarity(query_vec, tfidf).flatten()
+    indices = np.argpartition(cosine_sim, -10)[-10:]
+    suggestions = anime_parquet.iloc[indices][['Mod_name', 'Popularity']].sort_values(by='Popularity', ascending=True)['Mod_name'].tolist()
+    print(suggestions)
+    return jsonify(suggestions)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
