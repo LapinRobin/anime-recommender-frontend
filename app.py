@@ -40,6 +40,7 @@ def list():
 
 
 
+
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     # Getting the search query from some source
@@ -58,7 +59,6 @@ def autocomplete():
     suggestions = [term for term in terms_list if regex.search(term)]
     
     return suggestions
-
 
 
 
