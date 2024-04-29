@@ -29,6 +29,15 @@ def recommend():
     recommendations = get_recommendations(anime_name)
     return render_template('recommendations.html', anime_name=anime_name, recommendations=recommendations)
 
+@app.route('/description&id=<anime_id>', methods=['GET'])
+def description(anime_id):
+    anime = anime_parquet[anime_parquet['anime_id'] == int(anime_id)]
+    if anime.empty:
+        anime_data = None
+    else:
+        anime_data = anime.iloc[0].to_dict()
+    return render_template('description.html', anime=anime_data)
+
 def get_recommendations(anime_name):
     # This function should return a list of recommended anime based on the input anime_name
     return ['Naruto', 'One Piece', 'Bleach']
