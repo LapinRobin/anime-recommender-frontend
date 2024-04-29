@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+﻿from flask import Flask, render_template, request, jsonify
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -43,15 +43,24 @@ def list():
 
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
+    # Getting the search query from some source
     query = request.args.get('term', '')
-    print(query)
-    processed_query = re.sub("[^a-zA-Z0-9 ]", "", query.lower())
-    query_vec = vectorizer.transform([processed_query])
-    cosine_sim = cosine_similarity(query_vec, tfidf).flatten()
-    indices = np.argpartition(cosine_sim, -10)[-10:]
-    suggestions = anime_parquet.iloc[indices][['Mod_name', 'Popularity']].sort_values(by='Popularity', ascending=True)['Mod_name'].tolist()
-    print(suggestions)
-    return jsonify(suggestions)
+    
+    # List of terms from another source
+    terms_list = anime_parquet['Mod_name'].tolist()
+    
+    # Escaping special characters in the query to avoid regex errors
+    processed_query = re.escape(query)
+    
+    # Creating a regular expression to search for terms starting with the query
+    regex = re.compile(r'\b' + processed_query, re.IGNORECASE)
+    
+    # Filtering the list of terms using the regular expression
+    suggestions = [term for term in terms_list if regex.search(term)]
+    
+    return suggestions
+
+
 
 
 
