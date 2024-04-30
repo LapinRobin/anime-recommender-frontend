@@ -1,3 +1,4 @@
 .vs/
+.idea/
 *.ipynb
 __pycache__/
