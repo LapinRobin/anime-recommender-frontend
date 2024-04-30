@@ -12,38 +12,50 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <script>
-    $(document).ready(function() {
-        $("input[name='anime']").on('input', function() {
-            var inputVal = $(this).val();
-            $.ajax({
-                url: "/autocomplete",
-                type: "GET",
-                dataType: "json",
-                data: { term: inputVal },
-                success: function(data) {
-                    var dataList = $('#anime-suggestions');
-                    dataList.empty(); // Clear previous suggestions
-                    $.each(data, function(key, value) {
-                        var option = $('<option></option>').attr("value", value);
-                        dataList.append(option);
-                    });
+        $(document).ready(function() {
+            var suggestionData = []; // To store suggestion data across eventts
 
-                    // Check if the current value of the input field is one of the suggestions
-                    var isSuggestion = data.includes(inputVal);
-                    if (isSuggestion) {
-                        // Redirect to the description route with the inputVal parameter
-                        window.location.href = '/description&Mod_name=' + inputVal;
-                    }
+
+            $("input[name='Mod_name']").on('input', function() {
+                var inputVal = $(this).val();
+                if (inputVal.length > 1) { // Check to reduce unnecessary requests
+                    $.ajax({
+                        url: "/autocomplete",
+                        type: "GET",
+                        dataType: "json",
+                        data: { term: inputVal },
+                        success: function(data) {
+                            suggestionData = data; // Store data for use later
+                            var dataList = $('#anime-suggestions');
+                            dataList.empty();
+                            $.each(data, function(key, value) {
+                                var option = $('<option></option>').attr("value", value);
+                                dataList.append(option);
+                            });
+                        }
+                    });
+                }
+            });
+
+        // Listen for 'change' event on the input to handle when an option is selected
+            $("input[name='Mod_name']").on('change', function() {
+                var inputVal = $(this).val();
+                // Check if the current input value matches any of the suggestions
+                var isSuggestion = suggestionData.includes(inputVal);
+                if (isSuggestion) {
+                    window.location.href = '/description?Mod_name=' + encodeURIComponent(inputVal);
+                } else {
+                    alert("Please select a valid suggestion.");
                 }
             });
         });
-    });
+
     </script>
 </head>
 <body class="page-index">
     <h1>Anime Recommender</h1>
-    <form action="/recommend" method="post">
-        <input type="text" name="anime" placeholder="Enter anime name" list="anime-suggestions">
+    <form action="/description" method="get">
+        <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
         <datalist id="anime-suggestions">
             <!-- Suggestions will be dynamically filled here -->
         </datalist>

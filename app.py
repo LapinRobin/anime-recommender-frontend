@@ -29,8 +29,9 @@ def recommend():
     recommendations = get_recommendations(anime_name)
     return render_template('recommendations.html', anime_name=anime_name, recommendations=recommendations)
 
-@app.route('/description&Mod_name=<Mod_name>', methods=['GET'])
-def description(Mod_name):
+@app.route('/description', methods=['GET'])
+def description():
+    Mod_name = request.args.get('Mod_name')
     anime = anime_parquet[anime_parquet['Mod_name'] == Mod_name]
     if anime.empty:
         anime_data = None
