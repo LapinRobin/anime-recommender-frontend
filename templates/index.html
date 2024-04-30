@@ -8,9 +8,6 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <script>
         $(document).ready(function() {
             var suggestionData = []; // To store suggestion data across eventts
@@ -53,13 +50,19 @@
     </script>
 </head>
 <body class="page-index">
-    <h1>Anime Recommender</h1>
-    <form action="/description" method="get">
-        <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
-        <datalist id="anime-suggestions">
-            <!-- Suggestions will be dynamically filled here -->
-        </datalist>
-        <button type="submit">Recommend</button>
-    </form>
+
+    
+    <div id="header">
+        <h1>Anime Atlas</h1>
+        <form action="/recommend" method="post">
+            <input type="text" name="anime" placeholder="Enter anime name" list="anime-suggestions">
+            <datalist id="anime-suggestions">
+                <!-- Suggestions will be dynamically filled here -->
+            </datalist>
+            <button type="submit">Recommend</button>
+        </form>
+    </div>
+    
+
 </body>
 </html>
