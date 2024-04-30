@@ -68,3 +68,14 @@ option {
     background-color: #fff;
     padding: 5px;
 }
+
+.label-select {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.select-input {
+    display: inline-block;
+    vertical-align: middle;
+}
