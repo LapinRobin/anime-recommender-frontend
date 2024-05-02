@@ -71,6 +71,25 @@
             <button type="submit">Search</button>
         </form>
     </div>
+
+    <div class="rated-anime-list">
+        <h2>Rated Anime</h2>
+        {% if rated_anime %}
+            <ul>
+            {% for mod_name, details in rated_anime.items() %}
+                <li>
+                    <strong>{{ details['Name'] }}</strong> (Rated: {{ details['rating'] }})
+                    <img src="{{ details['Image URL'] }}" alt="{{ details['Name'] }}" style="width:100px; height:auto;">
+                    <!-- Add more details as needed -->
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No ratings available yet. Start by exploring and rating some anime!</p>
+        {% endif %}
+    </div>
+
+
     
 
 </body>
