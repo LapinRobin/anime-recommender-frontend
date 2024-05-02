@@ -57,7 +57,15 @@
             {% if results %}
                 {% for anime in results %}
                     <p>
-                        <h1><a href="/description?Mod_name={{ anime['Mod_name'] }}"> {{ anime['Name'] }} {% if anime['English name'] == "UNKNOWN" %}{% else %}({{ anime['English name'] }}){% endif %}</a></h1>
+                        <h1>
+                            <a href="/description?Mod_name={{ anime['Mod_name'] }}">
+                                {% if anime['English name'] == "UNKNOWN" %}
+                                    {{ anime['Name'] }}
+                                {% else %}
+                                    {{ anime['English name'] }}
+                                {% endif %}
+                            </a>
+                        </h1>
                         <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid">
                         <p><strong>Genres:</strong> {{ anime['Genres'] }}</p>
                         <p><strong>Type:</strong> {{ anime['Type'] }}</p>
