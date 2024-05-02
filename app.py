@@ -57,6 +57,18 @@ def recommend():
     recommendations = get_recommendations(anime_name)
     return render_template('recommendations.html', anime_name=anime_name, recommendations=recommendations)
 
+@app.route('/search', methods=['GET'])
+def search():
+    Mod_name = request.args.get('Mod_name')
+
+    query = Mod_name
+    terms_list = anime_parquet['Mod_name'].tolist()
+    processed_query = re.escape(query)
+    regex = re.compile(r'\b' + processed_query, re.IGNORECASE)
+    suggestions = [anime_parquet[anime_parquet['Mod_name'] == term].to_dict(orient='records')[0] for term in terms_list if regex.search(term)]
+
+    return render_template('search.html', results=suggestions)
+
 @app.route('/description', methods=['GET'])
 def description():
     Mod_name = request.args.get('Mod_name')

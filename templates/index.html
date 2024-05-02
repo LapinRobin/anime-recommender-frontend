@@ -47,7 +47,8 @@
                 if (isSuggestion) {
                     window.location.href = '/description?Mod_name=' + encodeURIComponent(inputVal);
                 } else {
-                    alert("Please select a valid suggestion from the list.");
+                    //alert("Please select a valid suggestion from the list.");
+                    window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
                 }
             });
 
