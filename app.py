@@ -20,16 +20,27 @@ tfidf = vectorizer.fit_transform(anime_parquet['Mod_name'])
 def index():
     rated_anime = {}
     for key in session.keys():
+        print(key, session[key])
         if key.startswith('rating_'):
             mod_name = key.split('_', 1)[1]  # Extract Mod_name from the key
             rated_anime[mod_name] = session[key]
 
     anime_details = {}
     if rated_anime:
-        anime_details = {mod_name: get_anime_details_by_mod_name(mod_name) for mod_name in rated_anime.keys()}
+        # Fetch details for each rated anime and include the rating
+        anime_details = {
+            mod_name: {
+                **get_anime_details_by_mod_name(mod_name),  # Unpack the existing details
+                'User_rating': rated_anime[mod_name]       # Add the user rating
+            }
+            for mod_name in rated_anime.keys() if get_anime_details_by_mod_name(mod_name) is not None
+        }
+
+        print(anime_details)
+        # Identify and remove any entries that did not have details available
         to_remove = [mod_name for mod_name, details in anime_details.items() if not details]
         for mod_name in to_remove:
-            anime_details.pop(mod_name)  # Safely remove entries outside of the iteration
+            anime_details.pop(mod_name)
 
     return render_template('index.html', rated_anime=anime_details)
 
