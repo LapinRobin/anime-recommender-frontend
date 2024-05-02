@@ -41,8 +41,17 @@
                 var isSuggestion = suggestionData.includes(inputVal);
                 if (isSuggestion) {
                     window.location.href = '/description?Mod_name=' + encodeURIComponent(inputVal);
+                }
+            });
+
+            $("form").on('submit', function(event) {
+                event.preventDefault(); // Prevent the normal form submission
+                var inputVal = $("input[name='Mod_name']").val();
+                var isSuggestion = suggestionData.includes(inputVal);
+                if (isSuggestion) {
+                    window.location.href = '/description?Mod_name=' + encodeURIComponent(inputVal);
                 } else {
-                    alert("Please select a valid suggestion.");
+                    alert("Please select a valid suggestion from the list.");
                 }
             });
         });
@@ -54,12 +63,12 @@
     
     <div id="header">
         <h1>Anime Atlas</h1>
-        <form action="/recommend" method="post">
-            <input type="text" name="anime" placeholder="Enter anime name" list="anime-suggestions">
+        <form action="/description" method="post">
+            <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
             <datalist id="anime-suggestions">
                 <!-- Suggestions will be dynamically filled here -->
             </datalist>
-            <button type="submit">Recommend</button>
+            <button type="submit">Search</button>
         </form>
     </div>
     
