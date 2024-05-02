@@ -13,6 +13,18 @@
     <title>Recommendations</title>
 </head>
 <body>
+
+    <div id="header">
+        <h1><a href="/">Anime Atlas</a></h1>
+        <form action="/description" method="post">
+            <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
+            <datalist id="anime-suggestions">
+                <!-- Suggestions will be dynamically filled here -->
+            </datalist>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
     <div id="container">
         <div id="filter-section">
             <h2>Filters</h2>
@@ -24,7 +36,7 @@
                     <option value="Romance">Romance</option>
                     <!-- Add more genres as needed -->
                 </select>
-                <br/>
+                <br />
                 <label for="type">Type:</label>
                 <select name="type" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
                     <option value="">Select Type</option>

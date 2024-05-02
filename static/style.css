@@ -3,13 +3,20 @@
     background-color: #9c9c9c;
     margin: 0;
     padding: 0;
+    background-image: url('placeholder.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
-    body.page-index {
-        background-image: url('placeholder.jpg');
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
+.overlay {
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.5); /* Couleur de fond semi-transparente */
+    padding: 20px;
+    margin:50px;
+    backdrop-filter: blur(10px); /* Effet de flou */
+    border-radius: 10px; /* Ajoute des bords arrondis de 10px à tous les côtés */
+    overflow: hidden; /* Pour s'assurer que le contenu à l'intérieur respecte les bords arrondis */
+}
 
 #header {
     display: flex;
@@ -18,9 +25,11 @@
     background-color: rgba(0, 0, 0, 0.5);
     padding: 10px 20px; /* Ajout de padding pour un meilleur aspect visuel */
     box-sizing: border-box; /* Pour inclure le padding dans la largeur totale */
+    width: 1920px;
+    height: 84px;
 }
 
-.page-index h1 {
+h1 {
     margin: 0; /* Pour enlever les marges par défaut */
     color: white;
     font-family: "Bangers", system-ui;
@@ -29,8 +38,10 @@
     font-size: 3em;
 }
 
-.page-index form {
+form {
     display: flex; /* Pour aligner les éléments du formulaire sur une ligne */
+    width: 268px;
+    height: 38px;
 }
 
 input[type="text"] {
@@ -39,6 +50,11 @@ input[type="text"] {
     margin-right: 10px; /* Ajout d'une marge entre la barre de recherche et le bouton */
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 14px;
+}
+
+input[type="text"]::placeholder {
+    font-size: 14px; /* Taille de police pour le placeholder des barres de recherche */
 }
 
 button {
@@ -47,6 +63,7 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
+    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -79,3 +96,20 @@ option {
     display: inline-block;
     vertical-align: middle;
 }
+
+/* Style par défaut pour les liens */
+a {
+    color: white; /* Couleur du texte blanc */
+    text-decoration: none; /* Supprime le soulignement par défaut */
+    transition: color 0.3s ease; /* Ajoute une transition pour une animation fluide */
+}
+
+    /* Style au survol (hover) */
+    a:hover {
+        color: rgba(255, 255, 255, 0.7); /* Réduit l'opacité du blanc pour rendre le lien plus transparent */
+    }
+
+    /* Style lorsque le lien est cliqué */
+    a:active {
+        color: white; /* Retourne au blanc lorsque le lien est cliqué */
+    }
