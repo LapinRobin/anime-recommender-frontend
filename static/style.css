@@ -25,6 +25,8 @@
     background-color: rgba(0, 0, 0, 0.5);
     padding: 10px 20px; /* Ajout de padding pour un meilleur aspect visuel */
     box-sizing: border-box; /* Pour inclure le padding dans la largeur totale */
+    width: 1920px;
+    height: 84px;
 }
 
 h1 {
@@ -36,8 +38,10 @@ h1 {
     font-size: 3em;
 }
 
- form {
+form {
     display: flex; /* Pour aligner les éléments du formulaire sur une ligne */
+    width: 268px;
+    height: 38px;
 }
 
 input[type="text"] {
@@ -46,6 +50,11 @@ input[type="text"] {
     margin-right: 10px; /* Ajout d'une marge entre la barre de recherche et le bouton */
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 14px;
+}
+
+input[type="text"]::placeholder {
+    font-size: 14px; /* Taille de police pour le placeholder des barres de recherche */
 }
 
 button {
@@ -54,6 +63,7 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
+    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
