@@ -8,8 +8,20 @@
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
+
+    <div id="header">
+        <h1><a href="/">Anime Atlas</a></h1>
+        <form action="/description" method="post">
+            <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
+            <datalist id="anime-suggestions">
+                <!-- Suggestions will be dynamically filled here -->
+            </datalist>
+            <button type="submit">Search</button>
+        </form>
+    </div>
     <div class="container mt-5">
-        {% if anime %}
+        <div class="overlay">
+            {% if anime %}
             <h1>{{ anime['Name'] }} {% if anime['English name'] == "UNKNOWN" %}{% else %}({{ anime['English name'] }}){% endif %}</h1>
             <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid">
             <p><strong>Other names:</strong> {{ anime['Other name'] }}</p>
@@ -29,9 +41,10 @@
             <p><strong>Favorites:</strong> {{ anime['Favorites'] }}</p>
             <p><strong>Scored By:</strong> {{ anime['Scored By'] }}</p>
             <p><strong>Members:</strong> {{ anime['Members'] }}</p>
-        {% else %}
+            {% else %}
             <h2>No anime found with the given ID.</h2>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>
