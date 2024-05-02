@@ -16,6 +16,10 @@
             $("input[name='Mod_name']").on('input', function() {
                 var inputVal = $(this).val();
                 if (inputVal.length > 1) { // Check to reduce unnecessary requests
+                    var isSuggestion = suggestionData.includes(inputVal);
+                    if (isSuggestion) {
+                        window.location.href = '/description?Mod_name=' + encodeURIComponent(inputVal);
+                    }
                     $.ajax({
                         url: "/autocomplete",
                         type: "GET",
@@ -34,15 +38,7 @@
                 }
             });
 
-        // Listen for 'change' event on the input to handle when an option is selected
-            $("input[name='Mod_name']").on('change', function() {
-                var inputVal = $(this).val();
-                // Check if the current input value matches any of the suggestions
-                var isSuggestion = suggestionData.includes(inputVal);
-                if (isSuggestion) {
-                    window.location.href = '/description?Mod_name=' + encodeURIComponent(inputVal);
-                }
-            });
+
 
             $("form").on('submit', function(event) {
                 event.preventDefault(); // Prevent the normal form submission
