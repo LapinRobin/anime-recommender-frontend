@@ -88,9 +88,6 @@ def get_recommendations(anime_name):
 def list():
     return render_template('list.html')
 
-
-
-
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     # Getting the search query from some source
@@ -109,7 +106,6 @@ def autocomplete():
     suggestions = [term for term in terms_list if regex.search(term)]
     
     return suggestions
-
 
 @app.route('/rate', methods=['POST'])
 def rate():
@@ -135,7 +131,6 @@ def retrieve_rating():
         return jsonify(success=True, rating=rating)
     else:
         return jsonify(success=False, message="Rating not found.")
-
 
 if __name__ == '__main__':
     app.run(debug=True)

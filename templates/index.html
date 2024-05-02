@@ -12,7 +12,6 @@
         $(document).ready(function() {
             var suggestionData = []; // To store suggestion data across eventts
 
-
             $("input[name='Mod_name']").on('input', function() {
                 var inputVal = $(this).val();
                 if (inputVal.length > 1) { // Check to reduce unnecessary requests
@@ -38,8 +37,6 @@
                 }
             });
 
-
-
             $("form").on('submit', function(event) {
                 event.preventDefault(); // Prevent the normal form submission
                 var inputVal = $("input[name='Mod_name']").val();
@@ -57,8 +54,6 @@
     </script>
 </head>
 <body class="page-index">
-
-    
     <div id="header">
         <h1><a href="/">Anime Atlas</a></h1>
         <form action="/description" method="post">
@@ -86,9 +81,6 @@
             <p>No ratings available yet. Start by exploring and rating some anime!</p>
         {% endif %}
     </div>
-
-
-    
 
 </body>
 </html>
