@@ -15,6 +15,7 @@ anime_parquet = pd.read_parquet('static/parquet/anime.parquet')
 vectorizer = TfidfVectorizer()
 tfidf = vectorizer.fit_transform(anime_parquet['Mod_name'])
 
+
 # Route to display the initial form, should handle GET to display the form, and optionally POST if submitting to the same endpoint
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -31,7 +32,7 @@ def index():
         anime_details = {
             mod_name: {
                 **get_anime_details_by_mod_name(mod_name),  # Unpack the existing details
-                'User_rating': rated_anime[mod_name]       # Add the user rating
+                'User_rating': rated_anime[mod_name]  # Add the user rating
             }
             for mod_name in rated_anime.keys() if get_anime_details_by_mod_name(mod_name) is not None
         }
@@ -44,11 +45,13 @@ def index():
 
     return render_template('index.html', rated_anime=anime_details)
 
+
 def get_anime_details_by_mod_name(mod_name):
     anime = anime_parquet[anime_parquet['Mod_name'] == mod_name]
     if anime.empty:
         return None
     return anime.iloc[0].to_dict()
+
 
 # Separate route for recommendations
 @app.route('/recommend', methods=['POST'])
@@ -56,6 +59,21 @@ def recommend():
     anime_name = request.form['anime']
     recommendations = get_recommendations(anime_name)
     return render_template('recommendations.html', anime_name=anime_name, recommendations=recommendations)
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    Mod_name = request.args.get('Mod_name')
+
+    query = Mod_name
+    terms_list = anime_parquet['Mod_name'].tolist()
+    processed_query = re.escape(query)
+    regex = re.compile(r'\b' + processed_query, re.IGNORECASE)
+    suggestions = [anime_parquet[anime_parquet['Mod_name'] == term].to_dict(orient='records')[0] for term in terms_list
+                   if regex.search(term)]
+
+    return render_template('search.html', results=suggestions)
+
 
 @app.route('/description', methods=['GET'])
 def description():
@@ -67,9 +85,11 @@ def description():
         anime_data = anime.iloc[0].to_dict()
     return render_template('description.html', anime=anime_data)
 
+
 def get_recommendations(anime_name):
     # This function should return a list of recommended anime based on the input anime_name
     return ['Naruto', 'One Piece', 'Bleach']
+
 
 # Simple GET route to display another page
 @app.route('/list')
@@ -77,35 +97,34 @@ def list():
     return render_template('list.html')
 
 
-
-
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
     # Getting the search query from some source
     query = request.args.get('term', '')
-    
+
     # List of terms from another source
     terms_list = anime_parquet['Mod_name'].tolist()
-    
+
     # Escaping special characters in the query to avoid regex errors
     processed_query = re.escape(query)
-    
+
     # Creating a regular expression to search for terms starting with the query
     regex = re.compile(r'\b' + processed_query, re.IGNORECASE)
-    
+
     # Filtering the list of terms using the regular expression
     suggestions = [term for term in terms_list if regex.search(term)]
-    
+
     return suggestions
 
 
 @app.route('/rate', methods=['POST'])
 def rate():
     mod_name = request.form.get('mod_name')  # Retrieve 'mod_name' from the form data
-    rating = request.form.get('rating')      # Retrieve the rating
+    rating = request.form.get('rating')  # Retrieve the rating
     # Save the rating in the session using 'mod_name'
     session[f'rating_{mod_name}'] = rating
     return jsonify(success=True)
+
 
 @app.route('/reset_rating', methods=['POST'])
 def reset_rating():
@@ -114,6 +133,7 @@ def reset_rating():
     if f'rating_{mod_name}' in session:
         del session[f'rating_{mod_name}']
     return jsonify(success=True)
+
 
 @app.route('/retrieve_rating', methods=['GET'])
 def retrieve_rating():
