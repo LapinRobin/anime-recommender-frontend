@@ -5,6 +5,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import re
 
+from subtitles_chatbot import files_embedding, contextualize_q_system_prompt, qa_system_prompt, Document
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from langchain.chains import create_history_aware_retriever, create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_openai import ChatOpenAI
+
 app = Flask(__name__)
 app.secret_key = 'secret'
 
@@ -21,7 +32,7 @@ tfidf = vectorizer.fit_transform(anime_parquet['Mod_name'])
 def index():
     rated_anime = {}
     for key in session.keys():
-        print(key, session[key])
+        # print(key, session[key])
         if key.startswith('rating_'):
             mod_name = key.split('_', 1)[1]  # Extract Mod_name from the key
             rated_anime[mod_name] = session[key]
@@ -37,7 +48,7 @@ def index():
             for mod_name in rated_anime.keys() if get_anime_details_by_mod_name(mod_name) is not None
         }
 
-        print(anime_details)
+        # print(anime_details)
         # Identify and remove any entries that did not have details available
         to_remove = [mod_name for mod_name, details in anime_details.items() if not details]
         for mod_name in to_remove:
@@ -145,5 +156,126 @@ def retrieve_rating():
         return jsonify(success=False, message="Rating not found.")
 
 
+# Route for the home chatbot, displays another page via an HTML template
+@app.route('/home-chatbot')
+def home():
+    return render_template('home-chatbot.html')
+
+
+# Route for the general chatbot, displays another page via an HTML template
+@app.route('/general-chatbot')
+def general_chatbot():
+    return render_template('general-chatbot.html')
+
+
+# Initialization of global variables used for the subtitles chatbot
+vectorstore_subtitles = None
+retriever_subtitles = None
+conversational_rag_chain_subtitles = None
+llm_subtitles = None
+history_aware_retriever_subtitles = None
+session_id = 'user_session'
+chat_history_subtitles = None
+chat_history_msgs_subtitles = None
+store_subtitles = {}
+
+
+# Function to obtain the chat session history
+def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    if session_id not in store_subtitles:
+        store_subtitles[session_id] = ChatMessageHistory()
+    return store_subtitles[session_id]
+
+
+# Route for the subtitles chatbot
+@app.route('/subtitles-chatbot')
+def subtitles_chatbot():
+    return render_template('subtitles-chatbot.html')
+
+
+# Route to initialize and load the data of the subtitles chatbot
+@app.route('/embed_files')
+async def embed_files_api():
+    global vectorstore_subtitles, retriever_subtitles
+    if vectorstore_subtitles is None:
+        vectorstore_subtitles = files_embedding()
+        try:
+            if vectorstore_subtitles is not None:
+                retriever_subtitles = vectorstore_subtitles.as_retriever()
+                return jsonify({"status": "success"}), 200
+            else:
+                # Properly handle the case where vectorstore_subtitles is None
+                return jsonify({"error": "Failed to create vectorstore_subtitles"}), 500
+        except Exception as e:
+            # Handle any exception that might occur during files_embedding() processing
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({"status": "The embedding is already done"}), 200
+
+
+# Route to receive and process messages sent to the subtitles chatbot
+@app.route('/get_response', methods=['POST'])
+async def get_response():
+    global conversational_rag_chain_subtitles, llm_subtitles, history_aware_retriever_subtitles, session_id, chat_history_subtitles, chat_history_msgs_subtitles, store_subtitles
+    user_message = request.json.get('message')
+
+    if not llm_subtitles:
+        llm_subtitles = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0.5)
+
+    if not history_aware_retriever_subtitles:
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", contextualize_q_system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human", "{input}"),
+            ]
+        )
+        history_aware_retriever_subtitles = create_history_aware_retriever(
+            llm_subtitles, retriever_subtitles, contextualize_q_prompt
+        )
+
+    if not conversational_rag_chain_subtitles:
+        qa_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", qa_system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human", "{input}"),
+            ]
+        )
+        question_answer_chain = create_stuff_documents_chain(llm_subtitles, qa_prompt)
+        rag_chain = create_retrieval_chain(history_aware_retriever_subtitles, question_answer_chain)
+        conversational_rag_chain_subtitles = RunnableWithMessageHistory(
+            rag_chain,
+            get_session_history,
+            input_messages_key="input",
+            history_messages_key="chat_history",
+            output_messages_key="answer",
+        )
+
+    chat_history_subtitles = get_session_history(session_id)
+    chat_history_msgs_subtitles = await chat_history_subtitles.aget_messages()
+
+    response_msg = conversational_rag_chain_subtitles.invoke(
+        {
+            "input": user_message,
+            "chat_history": chat_history_msgs_subtitles
+        },
+        config={"configurable": {"session_id": session_id}}
+    )
+
+    chat_history_subtitles.add_messages([
+        ('human', user_message),
+        ('system', response_msg['answer'])
+    ])
+
+    return jsonify({"answer": response_msg['answer']})
+
+
+# Delete chat subtitles history
+@app.route('/delete_chat_subtitles_history')
+def delete_chat_subtitles_history():
+    del store_subtitles[session_id]
+    return jsonify({"status": "Chat history deleted"}), 200
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8000)
