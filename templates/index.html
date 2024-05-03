@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Recommender</title>
     <link rel="stylesheet" href="../static/style.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://fonts.cdnfonts.com/css/manga-temple" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{url_for('static', filename='search.js')}}"></script>
 </head>
+
 <body class="page-index">
     <div id="header">
         <h1><a href="/">Anime Atlas</a></h1>
+        <h2><a href="/home-chatbot">Chat</a></h2>
         <form action="/description" method="post">
             <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
             <datalist id="anime-suggestions">
@@ -25,19 +29,22 @@
     <div class="rated-anime-list">
         <h2>Rated Anime</h2>
         {% if rated_anime %}
-            <ul>
+        <ul>
             {% for mod_name, details in rated_anime.items() %}
-                <li>
-                    <strong>{{ details['Name'] }}</strong> (Rating: {{ details['User_rating'] }})
-                    <img src="{{ details['Image URL'] }}" alt="{{ details['Name'] }}" style="width:100px; height:auto;">
-                    <!-- Add more details as needed -->
-                </li>
+            <li>
+                <strong>{{ details['Name'] }}</strong> (Rating: {{ details['User_rating'] }})
+                <img src="{{ details['Image URL'] }}" alt="{{ details['Name'] }}" style="width:100px; height:auto;">
+                <!-- Add more details as needed -->
+            </li>
             {% endfor %}
-            </ul>
+            <button type="submit" class="Recommend-button">Recommend me some Animes !!</button>
+        </ul>
+
         {% else %}
-            <p>No ratings available yet. Start by exploring and rating some anime!</p>
+        <p>No ratings available yet. Start by exploring and rating some anime!</p>
         {% endif %}
     </div>
 
 </body>
+
 </html>
