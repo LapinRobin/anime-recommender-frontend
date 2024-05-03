@@ -31,59 +31,65 @@
 <body>
 <div id="header">
     <h1><a href="/">Anime Atlas</a></h1>
+    <h2><a href="/recommendations">Recommend me</a></h2>
+    <h2><a href="/home-chatbot">Chat</a></h2>
     <form action="/description" method="post">
         <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
         <datalist id="anime-suggestions">
             <!-- Suggestions will be dynamically filled here -->
         </datalist>
-        <button type="submit">Search</button>
+        <button type="submit" class="search-button">Search</button>
     </form>
 </div>
 
 <div id="container">
-    <div id="filter-section">
-        <h2>Filters</h2>
-        <form id="filter-form" action="/filter" method="get" hx-get="/filter" hx-target="#result-section"
-              hx-indicator="#loading">
+    <div id="filter-section" class="filter-section">
+        <h2 class="title-search">Filters</h2>
+        <form id="filter-form" action="/filter" method="get" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading">
             <input type="hidden" name="Mod_name" id="modNameInput">
-            <label for="genre">Genre:</label>
-            <select name="genre">
-                <option value="">Select Genre</option>
-                <option value="Action">Action</option>
-                <option value="Adventure">Adventure</option>
-                <option value="Comedy">Comedy</option>
-                <option value="Drama">Drama</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="Horror">Horror</option>
-                <option value="Music">Music</option>
-                <option value="Romance">Romance</option>
-                <option value="Sci-Fi">Sci-Fi</option>
-                <!-- Add more genres as needed -->
-            </select>
-            <br/>
-            <label for="type">Type:</label>
-            <select name="type">
-                <option value="">Select Type</option>
-                <option value="TV">TV</option>
-                <option value="Movie">Movie</option>
-                <option value="Music">Music</option>
-                <option value="ONA">ONA</option>
-                <option value="OVA">OVA</option>
-                <option value="Special">Special</option>
-            </select>
-            <br/>
-            <label for="rating">Rating:</label>
-            <select name="rating">
-                <option value="">Select Rating</option>
-                <option value="R-17">R - 17+ (violence & profanity)</option>
-                <option value="PG-13">PG-13 - Teens 13 or older</option>
-                <option value="G">G - All Ages</option>
-                <option value="PG">PG - Children</option>
-                <option value="R+">R+ - Mild Nudity</option>
-                <option value="Rx">Rx - Hentai</option>
-            </select>
-            <button type="submit">Apply Filters</button>
+            <div class="filter-subsection">
+                <label for="genre" class="filter-section-title">Genre&nbsp;:</label>
+                <select title="Select Genre" name="genre" class="custom-select">
+                    <option value="">Select Genre</option>
+                    <option value="Action">Action</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Music">Music</option>
+                    <option value="Romance">Romance</option>
+                    <option value="School">School</option>
+                    <option value="Sci-Fi">Sci-Fi</option>
+                </select>
+            </div>
+            <div class="filter-subsection">
+                <label for="type" class="filter-section-title">Type&nbsp;:</label>
+                <select title="Select Type" name="type" class="custom-select">
+                    <option value="">Select Type</option>
+                    <option value="TV">TV</option>
+                    <option value="Movie">Movie</option>
+                    <option value="Music">Music</option>
+                    <option value="ONA">ONA</option>
+                    <option value="OVA">OVA</option>
+                    <option value="Special">Special</option>
+                </select>
+            </div>
+            <div class="filter-subsection">
+                <label for="rating" class="filter-section-title">Rating&nbsp;:</label>
+                <select title="Select Rating" name="rating" class="custom-select">
+                    <option value="">Select Rating</option>
+                    <option value="R-17">R - 17+ (violence & profanity)</option>
+                    <option value="PG-13">PG-13 - Teens 13 or older</option>
+                    <option value="G">G - All Ages</option>
+                    <option value="PG">PG - Children</option>
+                    <option value="R+">R+ - Mild Nudity</option>
+                    <option value="Rx">Rx - Hentai</option>
+                </select>
+            </div>
+            <button type="submit" class="apply-filter-button">Apply filters</button>
         </form>
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 // Fetch 'Mod_name' from the URL query parameters
@@ -94,35 +100,44 @@
                 document.getElementById('modNameInput').value = modName;
             });
         </script>
-    </div>
 
+    </div>
     <div id="result-section">
-        <h2>Search Results</h2>
-        <div id="loading" style="display:none;">Loading...</div>
+        
+        <div id="loading" class="loading">Loading...</div>
+        <div class="center-text">
+            <h2 class="title-search">Search results</h2>
+        </div>
         <!-- Results will be loaded here -->
 
-        {% if results %}
-            {% for anime in results %}
-                <div class="overlay">
-                    <h1>
-                        <a href="/description?Mod_name={{ anime['Mod_name'] }}">
-                            {% if anime['English name'] == "UNKNOWN" %}
-                                {{ anime['Name'] }}
-                            {% else %}
-                                {{ anime['English name'] }}
-                            {% endif %}
-                        </a>
-                    </h1>
-                    <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid"
-                         style="margin-bottom:20px; margin-top:20px;">
-                    <p><strong>Genres:</strong> {{ anime['Genres'] }}</p>
-                    <p><strong>Type:</strong> {{ anime['Type'] }}</p>
-                    <p><strong>Synopsis:</strong> {{ anime['Synopsis'] }}</p>
+            {% if results %}
+                {% for anime in results %}
+                    <div class="overlay">
+                        <h1>
+                            <a class="title-anime" href="/description?Mod_name={{ anime['Mod_name'] }}">
+                                {% if anime['English name'] == "UNKNOWN" %}
+                                    {{ anime['Name'] }}
+                                {% else %}
+                                    {{ anime['English name'] }}
+                                {% endif %}
+                            </a>
+                        </h1>
+                        <div class="anime-display">
+                            <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid image-search-page">
+                            <div class="anime-info">
+                                <p><strong>Synopsis&nbsp;:</strong> {{ anime['Synopsis'] }}</p>
+                                <p><strong>Genres&nbsp;:</strong> {{ anime['Genres'] }}</p>
+                                <p><strong>Type&nbsp;:</strong> {{ anime['Type'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <div class="center-text">
+                    <h2 class="no-results-found">No results found.</h2>
                 </div>
-            {% endfor %}
-        {% endif %}
-
+                {% endif %}
+        </div>
     </div>
-</div>
 </body>
 </html>
