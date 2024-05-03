@@ -36,7 +36,7 @@
                 <div class="rating-section">
                 <label for="rating">Your Rating (1-10):</label>
                 <input type="number" id="rating" name="rating" min="1" max="10" value="{{ session.get('rating_' + request.args.get('Mod_name', ''), '') }}">
-                <button onclick="submitRating()">Submit</button>
+                <button onclick="submitRating()">Save to list</button>
                 <button onclick="resetRating()">Reset</button>
             </div>
 
