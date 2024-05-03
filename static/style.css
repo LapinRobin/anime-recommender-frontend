@@ -9,12 +9,12 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #9c9c9c;
     margin: 0;
     padding: 0;
     background-image: url('placeholder.jpg');
     background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed; /* Maintient l'image fixe lors du défilement */
 }
 
 .overlay {
@@ -62,7 +62,7 @@ h2 {
     font-family: "Bangers", system-ui;
     font-weight: 400;
     font-style: normal;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 form {
@@ -200,7 +200,7 @@ a:active {
 
 .anime-item {
     width: 350px; /* Fixed width for each item */
-    height: 300px; /* Fixed height for each item */
+    height: 450px; /* Fixed height for each item */
     margin: 10px; /* Adjust margin as needed */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
@@ -214,13 +214,32 @@ a:active {
     border: 1px solid #ccc; /* Add a border for the card-like appearance */
     padding: 10px; /* Add padding for spacing inside the card */
     text-align: center; /* Center-align the content */
+    width: 350px; /* Fixed width for each item */
+    height: 400px; /* Fixed height for each item */
     background-color: white;
 }
 
 .anime-image {
-    width: 100px;
+    width: 150px;
     height: auto;
     border-radius: 10px;
+}
+
+.card-overlay {
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.5); /* Couleur de fond semi-transparente */
+    color: black; /* Définit la couleur du texte en noir */
+    border-radius: 10px; /* Ajoute des bords arrondis de 10px à tous les côtés */
+    padding: 20px;
+    margin: 50px;
+    backdrop-filter: blur(10px); /* Effet de flou */
+    width: 300px; /* Largeur fixe pour toutes les cartes */
+    height: 450px; /* Hauteur fixe pour toutes les cartes */
+    overflow: hidden; /* Pour s'assurer que le contenu à l'intérieur respecte les bords arrondis */
+    display: flex; /* Utilise Flexbox pour le layout */
+    justify-content: center; /* Centre le contenu horizontalement */
+    align-items: center; /* Centre le contenu verticalement */
+    flex-direction: column; /* Organise les enfants en colonne */
 }
 
 .rating-container {
