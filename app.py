@@ -16,6 +16,12 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
 
+import joblib
+from sklearn.metrics.pairwise import linear_kernel
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableLambda
+from general_chatbot import list_to_string, tool_example_to_messages, Data, Anime
+
 app = Flask(__name__)
 app.secret_key = 'secret'
 
@@ -159,11 +165,190 @@ def retrieve_rating():
 def home():
     return render_template('home-chatbot.html')
 
-
 # Route for the general chatbot, displays another page via an HTML template
 @app.route('/general-chatbot')
 def general_chatbot():
     return render_template('general-chatbot.html')
+
+# Initialization of global variables used for the general chatbot
+llm_general = None
+anime_list_general = None
+vectorizer_general = None
+matrix_general = None
+num_samples_general = None
+num_anime_rec_general = None
+classification_prompt_general = None
+anime_synopsis_generator_prompt_general = None
+general_prompt = None
+basic_chain_general = None
+anime_chain_general = None
+general_chain = None
+examples_general = None
+messages_general = None
+full_chain_general = None
+
+def recommend_anime_fictional_syn(data):
+    synopsis = [anime.description for anime in data.list]
+    tfidf_matrix_new = vectorizer_general.transform(synopsis)
+    cosine_sim = linear_kernel(tfidf_matrix_new, matrix_general)
+    average_similarities = np.mean(cosine_sim, axis=0)
+    sim_scores = list(enumerate(average_similarities))
+    sorted_sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    indices = [idx for idx, sim in sorted_sim_scores[:num_samples_general]]
+    selected_animes = anime_list_general.loc[indices]
+    filtered_df = selected_animes[selected_animes['Type'] != 'Music']
+    sorted_anime_list = filtered_df.sort_values('Score', ascending=False).iloc[:num_anime_rec_general]
+    return sorted_anime_list['Name'].to_list()
+
+def route(info):
+    if "anime" in info["topic"].lower():
+        return anime_chain_general
+    else:
+        return general_chain
+
+# Route to receive and process messages sent to the general chatbot
+@app.route('/get_response_general_chatbot', methods=['POST'])
+def get_response_general_chatbot():
+    global llm_general, anime_list_general, vectorizer_general, matrix_general, num_samples_general, num_anime_rec_general, classification_prompt_general, anime_synopsis_generator_prompt_general, general_prompt, basic_chain_general, anime_chain_general, general_chain, examples_general, messages_general, full_chain_general
+    
+    if llm_general is None:
+        llm_general = ChatOpenAI(temperature=1, model="gpt-3.5-turbo-0613", max_tokens=512)
+    
+    if anime_list_general is None:
+        anime_list_general = pd.read_parquet('static/parquet/anime.parquet')
+    
+    if vectorizer_general is None:
+        vectorizer_general = joblib.load('static/tfidf_vectorizer.pkl')
+    
+    if matrix_general is None:
+        matrix_general = joblib.load('static/sparse_matrix.pkl')
+    
+    if num_samples_general is None:
+        num_samples_general = 50
+
+    if num_anime_rec_general is None:
+        num_anime_rec_general = 3
+    
+    if examples_general is None:
+        examples_general = [
+            (
+                "I want an anime about camping.",
+                Data(list=[
+                    Anime(
+                        description='A group of high school students go on a camping trip and learn about nature and '
+                                    'friendship.'),
+                    Anime(
+                        description='A girl goes on a solo camping trip to find solace and discover herself in the great '
+                                    'outdoors.')
+                ])
+            ),
+            (
+                "I want a romantic anime for girls.",
+                Data(list=[
+                    Anime(
+                        description='A heartwarming story about two high school students who fall in love and navigate the '
+                                    'ups and downs of their relationship.'),
+                    Anime(
+                        description='A girl moves to a new town and finds herself drawn to a mysterious boy with a tragic '
+                                    'past. Together, they discover the power of love and healing.')
+                ])
+            ),
+            (
+                "What is 2+2?",
+                Data(list=[])
+            ),
+            (
+                "Give me a fun fact",
+                Data(list=[])
+            ),
+
+        ]
+
+    if messages_general is None:
+        messages_general = []
+        for text, tool_call in examples_general:
+            messages_general.extend(
+                tool_example_to_messages({"input": text, "tool_calls": [tool_call]})
+            )
+
+    if classification_prompt_general is None:
+        classification_prompt_general = ChatPromptTemplate.from_template(
+            """
+                    Given the user request below, classify it as either being about `Anime or Story` or `Other`.
+                    
+                    Be more willing to classify `Anime or Story`
+                    Do not respond with more than one word.
+                    
+                    <request>
+                    {request}
+                    </request>
+                    
+                    Classification:
+                """
+        )
+
+    if anime_synopsis_generator_prompt_general is None:
+        anime_synopsis_generator_prompt_general = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    "You are an expert extraction algorithm. "
+                    "You only extract a maximum of 2 elements in the list"
+                    "You will need to extract a very short description of the anime without giving its name."
+                    "Only extract relevant information from the text. "
+                    "If you do not know the value of an attribute asked to extract, "
+                    "return null for the attribute's value."
+                    ,
+                ),
+                MessagesPlaceholder('examples'),
+                ("human", "{request}"),
+            ]
+        )
+
+    if general_prompt is None:
+        general_prompt = ChatPromptTemplate.from_template(
+            """Respond to the following question:
+
+            Request: {request}
+            Answer:
+            """
+        )
+
+    if basic_chain_general is None:
+        basic_chain_general = (
+                classification_prompt_general
+                | llm_general
+                | StrOutputParser()
+        )
+
+    if anime_chain_general is None:
+        anime_chain_general = (
+                anime_synopsis_generator_prompt_general
+                | llm_general.with_structured_output(schema=Data)
+                | RunnableLambda(recommend_anime_fictional_syn)
+                | RunnableLambda(list_to_string)
+                | llm_general
+                | StrOutputParser()
+        )
+
+    if general_chain is None:
+        general_chain = (
+                general_prompt
+                | llm_general
+        )
+
+    if full_chain_general is None:
+        full_chain_general = {"topic": basic_chain_general, "request": lambda x: x["request"], "examples": lambda x: x["examples"]} | RunnableLambda(
+            route
+        )
+
+    user_message = request.json.get('message')
+    response_msg = full_chain_general.invoke({"request": user_message, "examples": messages_general})
+    
+    if isinstance(response_msg, str):
+        return jsonify({"answer": response_msg})
+    
+    return response_msg.to_json()
 
 
 # Initialization of global variables used for the subtitles chatbot
