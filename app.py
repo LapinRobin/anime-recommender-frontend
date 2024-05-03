@@ -1,4 +1,4 @@
-﻿from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -108,7 +108,7 @@ def get_recommendations(anime_name):
 
 # Simple GET route to display another page
 @app.route('/list')
-def list():
+def list_get_route():
     return render_template('list.html')
 
 
@@ -349,7 +349,6 @@ def get_response_general_chatbot():
         return jsonify({"answer": response_msg})
     
     return response_msg.to_json()
-
 
 # Initialization of global variables used for the subtitles chatbot
 vectorstore_subtitles = None
