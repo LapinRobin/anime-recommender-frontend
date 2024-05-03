@@ -183,6 +183,12 @@ a:active {
     color: white;
 }
 
+#filter-form {
+    display: flex;
+    flex-direction: column;
+}
+
+
 .anime-list {
     list-style: none;
     padding: 0;
@@ -232,3 +238,4 @@ a:active {
 .overlay strong {
     color: black; /* Sets the text color to black */
 }
+
