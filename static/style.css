@@ -169,3 +169,8 @@ a:active {
     color: white;
     /* Retourne au blanc lorsque le lien est cliqué */
 }
+
+#filter-form {
+    display: flex;
+    flex-direction: column;
+}
