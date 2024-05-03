@@ -16,26 +16,26 @@
 <body class="page-index">
     <div id="header">
         <h1><a href="/">Anime Atlas</a></h1>
-        <h2><a href="/recommendations">Recommend me!</a></h2>
+        <h2><a href="/recommendations">Recommend me</a></h2>
         <h2><a href="/home-chatbot">Chat</a></h2>
         <form action="/description" method="post">
             <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
             <datalist id="anime-suggestions">
                 <!-- Suggestions will be dynamically filled here -->
             </datalist>
-            <button type="submit">Search</button>
+            <button type="submit" class="search-button">Search</button>
         </form>
     </div>
 
     <div class="rated-anime-list">
-        <h2>My Anime List</h2>
+        <h2 style="font-size: 4em;">My Anime List</h2>
         {% if rated_anime %}
             <ul class="anime-list">
                 {% for mod_name, details in rated_anime.items() %}
                 <li class="anime-item">
                     <a href="/description?Mod_name={{ mod_name | urlencode }}" style="display: block;"> <!-- Add your URL here -->
-                        <div class="overlay">
-                            <strong>{{ details['Name'] }}</strong>
+                        <div class="card-overlay">
+                            <strong style="font-size: 1.2em;">{{ details['Name'] }}</strong>
                             <br></br>
                             <div class="rating-container">
                                 <img src="{{ details['Image URL'] }}" alt="{{ details['Name'] }}" class="anime-image">
@@ -48,7 +48,7 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p class="empty-list-message">You haven't added any anime to the list. Start by exploring some anime!</p>
+            <p class="empty-list-message"  style="color: white; font-weight: bold; margin-top: 15px;">You haven't added any anime to the list. Start by exploring some anime !</p>
         {% endif %}
     </div>
 

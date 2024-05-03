@@ -5,9 +5,9 @@ const themeButton = document.querySelector("#theme-btn");
 const deleteButton = document.querySelector("#delete-btn");
 
 let userText = null;
-const API_KEY = "PASTE-YOUR-API-KEY-HERE"; // Paste your API key here
 
 const loadDataFromLocalstorage = () => {
+
     // Load saved chats and theme from local storage and apply/add on the page
     const themeColor = localStorage.getItem("themeColor");
 
@@ -32,30 +32,26 @@ const createChatElement = (content, className) => {
 }
 
 const getChatResponse = async (incomingChatDiv) => {
-    const API_URL = "https://api.openai.com/v1/completions";
+    
     const pElement = document.createElement("p");
 
-    // Define the properties and data for the API request
+    // Configurer les options de la requête POST
     const requestOptions = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${API_KEY}`
-        },
-        body: JSON.stringify({
-            model: "text-davinci-003",
-            prompt: userText,
-            max_tokens: 2048,
-            temperature: 0.2,
-            n: 1,
-            stop: null
-        })
-    }
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText })
+    };
 
     // Send POST request to API, get response and set the reponse as paragraph element text
     try {
-        const response = await (await fetch(API_URL, requestOptions)).json();
-        pElement.textContent = response.choices[0].text.trim();
+        // Appeler l'API Flask pour obtenir la réponse
+        const response = await (await fetch('/get_response_general_chatbot', requestOptions)).json();
+        console.log(response)
+        if (response.hasOwnProperty('kwargs')) {
+            pElement.textContent = response.kwargs.content;
+        } else {
+            pElement.textContent = response.answer;
+        }
     } catch (error) { // Add error class to the paragraph element and set error text
         pElement.classList.add("error");
         pElement.textContent = "Oops! Something went wrong while retrieving the response. Please try again.";
@@ -122,10 +118,7 @@ const handleOutgoingChat = () => {
 deleteButton.addEventListener("click", async () => {
     // Remove the chats from local storage and call loadDataFromLocalstorage function
     if(confirm("Are you sure you want to delete all the chats?")) {
-        const response = await fetch('/delete_chat_subtitles_history');
-
-        // These operations will only run if the fetch was successful
-        localStorage.removeItem("all-chats-subtitles");
+        localStorage.removeItem("all-chats-general");
         loadDataFromLocalstorage();
     }
 });
