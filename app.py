@@ -213,7 +213,7 @@ async def embed_files_api():
 
 # Route to receive and process messages sent to the subtitles chatbot
 @app.route('/get_response_subtitles_chatbot', methods=['POST'])
-async def get_response():
+async def get_response_subtitles_chatbot():
     global conversational_rag_chain_subtitles, llm_subtitles, history_aware_retriever_subtitles, session_id, chat_history_subtitles, chat_history_msgs_subtitles, store_subtitles
     user_message = request.json.get('message')
 
