@@ -89,6 +89,25 @@ def search():
 
     return render_template('search.html', results=suggestions)
 
+@app.route('/filter', methods=['GET'])
+def filter_anime():
+    mod_name = request.args.get('Mod_name', '')
+    genre = request.args.get('genre', '')
+    type_ = request.args.get('type', '')
+    rating = request.args.get('rating', '')
+
+    # Filter the dataset based on the received parameters
+    filtered_anime = anime_parquet[
+        (anime_parquet['Mod_name'].str.contains(mod_name, case=False, na=False) if mod_name else True) &
+        (anime_parquet['Genres'].str.contains(genre, case=False, na=False) if genre else True) &
+        (anime_parquet['Type'].str.contains(type_, case=False, na=False) if type_ else True) &
+        (anime_parquet['Rating'].str.contains(rating, case=False, na=False) if rating else True)
+    ]
+
+    # Convert filtered DataFrame to list of dicts for rendering
+    results = filtered_anime.to_dict(orient='records')
+
+    return render_template('results.html', results=results)
 
 @app.route('/description', methods=['GET'])
 def description():

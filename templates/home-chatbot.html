@@ -6,7 +6,23 @@
     <title>Accueil</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/style-home-chatbot.css">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+
+<body class="home-chatbot">
+<div id="header">
+    <h1><a href="/">Anime Atlas</a></h1>
+    <h2><a href="/recommendations">Recommend me!</a></h2>
+    <h2><a href="/home-chatbot">Chat</a></h2>
+    <form action="/description" method="post">
+        <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
+        <datalist id="anime-suggestions">
+            <!-- Suggestions will be dynamically filled here -->
+        </datalist>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
 <body>
     <div class="container">
         <h1>Let's find the best anime for you</h1>
@@ -15,6 +31,8 @@
             <a href="/general-chatbot" class="btn btn-primary">General Chatbot</a>
             <a href="/subtitles-chatbot" class="btn btn-secondary">Subtitles Chatbot</a>
         </div>
+
     </div>
+</div>
 </body>
 </html>

@@ -30,6 +30,32 @@ body {
   background: var(--outgoing-chat-bg);
 }
 
+/* Style par défaut pour les liens */
+a {
+    color: white;
+    /* Couleur du texte blanc */
+    text-decoration: none;
+    /* Supprime le soulignement par défaut */
+    transition: color 0.3s ease;
+    /* Ajoute une transition pour une animation fluide */
+}
+
+/* Style au survol (hover) */
+a:hover {
+    color: rgba(13, 110, 253, 1); /* Réduit l'opacité du blanc pour rendre le lien plus transparent */
+}
+
+/* Style lorsque le lien est cliqué */
+a:active {
+    color: white; /* Retourne au blanc lorsque le lien est cliqué */
+}
+
+#return {
+  margin: 20px;
+  padding: 0;
+  cursor: pointer;
+}
+
 /* Chats container styling */
 .chat-container {
   overflow-y: auto;
