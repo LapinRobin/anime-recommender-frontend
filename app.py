@@ -479,4 +479,4 @@ def delete_chat_subtitles_history():
     return jsonify({"status": "Chat history deleted"}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(debug=True)
