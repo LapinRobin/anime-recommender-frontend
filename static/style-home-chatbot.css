@@ -51,6 +51,7 @@
 .btn {
     margin: 20px; 
     padding: 10px 20px; 
+    border-radius: 1.4vh;
 }
 
 .btn-primary {
