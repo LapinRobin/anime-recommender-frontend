@@ -19,7 +19,7 @@ $(document).ready(function() {
         }
     });
 
-    $("form").on('submit', function(event) {
+    $("form").not("#filter-form").on('submit', function(event) {
         event.preventDefault(); // Prevent the normal form submission
         let inputVal = $("input[name='Mod_name']").val();
         window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
