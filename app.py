@@ -218,7 +218,7 @@ async def get_response():
     user_message = request.json.get('message')
 
     if not llm_subtitles:
-        llm_subtitles = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0.5)
+        llm_subtitles = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
 
     if not history_aware_retriever_subtitles:
         contextualize_q_prompt = ChatPromptTemplate.from_messages(
