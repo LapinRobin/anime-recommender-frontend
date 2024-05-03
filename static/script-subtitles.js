@@ -5,7 +5,6 @@ const themeButton = document.querySelector("#theme-btn");
 const deleteButton = document.querySelector("#delete-btn");
 
 let userText = null;
-let userSession = 1;
 
 const loadDataFromLocalstorage = async () => {
 
@@ -48,13 +47,13 @@ const getChatResponse = async (incomingChatDiv) => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userText, session: userSession })
+        body: JSON.stringify({ message: userText })
     };
 
     // Send POST request to API, get response and set the reponse as paragraph element text
     try {
         // Appeler l'API Flask pour obtenir la réponse
-        const response = await (await fetch('/get_response', requestOptions)).json();
+        const response = await (await fetch('/get_response_subtitles_chatbot', requestOptions)).json();
         pElement.textContent = response.answer;
     } catch (error) { // Add error class to the paragraph element and set error text
         pElement.classList.add("error");

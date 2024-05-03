@@ -95,7 +95,7 @@
             {% if results %}
                 {% for anime in results %}
                     <div class="overlay">
-                        <h1 style="margin-bottom:20px;">
+                        <h1>
                             <a href="/description?Mod_name={{ anime['Mod_name'] }}">
                                 {% if anime['English name'] == "UNKNOWN" %}
                                     {{ anime['Name'] }}
@@ -104,7 +104,7 @@
                                 {% endif %}
                             </a>
                         </h1>
-                        <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid">
+                        <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid" style="margin-bottom:20px; margin-top:20px;">
                         <p><strong>Genres:</strong> {{ anime['Genres'] }}</p>
                         <p><strong>Type:</strong> {{ anime['Type'] }}</p>
                         <p><strong>Synopsis:</strong> {{ anime['Synopsis'] }}</p>
