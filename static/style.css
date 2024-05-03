@@ -114,7 +114,7 @@ a {
 
     /* Style au survol (hover) */
     a:hover {
-        color: rgba(255, 255, 255, 0.7); /* Réduit l'opacité du blanc pour rendre le lien plus transparent */
+        color: rgba(13, 110, 253, 1); /* Réduit l'opacité du blanc pour rendre le lien plus transparent */
     }
 
     /* Style lorsque le lien est cliqué */
