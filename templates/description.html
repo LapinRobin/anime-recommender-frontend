@@ -26,7 +26,7 @@
     <div class="container mt-5">
         <div class="overlay">
             {% if anime %}
-                <h1>
+                <h1 style="margin-bottom:17px;">
                     {% if anime['English name'] == "UNKNOWN" %}
                         {{ anime['Name'] }}
                     {% else %}
@@ -98,7 +98,7 @@
             }
             </script>
 
-            <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid">
+            <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid" style="margin-bottom:10px";>
             <p><strong>Other names:</strong> {{ anime['Other name'] }}</p>
             <p><strong>Genres:</strong> {{ anime['Genres'] }}</p>
             <p><strong>Synopsis:</strong> {{ anime['Synopsis'] }}</p>
