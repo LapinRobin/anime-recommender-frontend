@@ -1,0 +1,18 @@
+<!-- results.html -->
+{% if results %}
+    {% for anime in results %}
+        <div class="overlay">
+            <h1>
+                <a href="/description?Mod_name={{ anime['Mod_name'] }}">
+                    {{ anime['English name'] if anime['English name'] != "UNKNOWN" else anime['Mod_name'] }}
+                </a>
+            </h1>
+            <img src="{{ anime['Image URL'] }}" alt="{{ anime['Mod_name'] }}" class="img-fluid" style="margin-bottom:20px; margin-top:20px;">
+            <p><strong>Genres:</strong> {{ anime['Genres'] }}</p>
+            <p><strong>Type:</strong> {{ anime['Type'] }}</p>
+            <p><strong>Synopsis:</strong> {{ anime['Synopsis'] }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No results found.</p>
+{% endif %}
