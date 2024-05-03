@@ -26,7 +26,6 @@ anime_parquet = pd.read_parquet('static/parquet/anime.parquet')
 vectorizer = TfidfVectorizer()
 tfidf = vectorizer.fit_transform(anime_parquet['Mod_name'])
 
-
 # Route to display the initial form, should handle GET to display the form, and optionally POST if submitting to the same endpoint
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -36,7 +35,6 @@ def index():
         if key.startswith('rating_'):
             mod_name = key.split('_', 1)[1]  # Extract Mod_name from the key
             rated_anime[mod_name] = session[key]
-
     anime_details = {}
     if rated_anime:
         # Fetch details for each rated anime and include the rating
@@ -48,11 +46,12 @@ def index():
             for mod_name in rated_anime.keys() if get_anime_details_by_mod_name(mod_name) is not None
         }
 
-        # print(anime_details)
         # Identify and remove any entries that did not have details available
         to_remove = [mod_name for mod_name, details in anime_details.items() if not details]
         for mod_name in to_remove:
             anime_details.pop(mod_name)
+
+        session['recommend_list'] = [(anime['anime_id'], int(anime['User_rating'])) for anime in anime_details.values()]
 
     return render_template('index.html', rated_anime=anime_details)
 
@@ -65,11 +64,10 @@ def get_anime_details_by_mod_name(mod_name):
 
 
 # Separate route for recommendations
-@app.route('/recommend', methods=['POST'])
-def recommend():
-    anime_name = request.form['anime']
-    recommendations = get_recommendations(anime_name)
-    return render_template('recommendations.html', anime_name=anime_name, recommendations=recommendations)
+@app.route('/recommendations')
+def recommendations():
+    recommand_list = session.get('recommand_list', [])
+    return render_template('recommendation.html', recommand_list=recommand_list)
 
 
 @app.route('/search', methods=['GET'])
