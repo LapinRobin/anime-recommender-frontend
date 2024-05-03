@@ -237,10 +237,10 @@ def get_response_general_chatbot():
         anime_list_general = pd.read_parquet('static/parquet/anime.parquet')
     
     if vectorizer_general is None:
-        vectorizer_general = joblib.load('static/tfidf_vectorizer.pkl')
+        vectorizer_general = joblib.load('static/pkl/tfidf_vectorizer.pkl')
     
     if matrix_general is None:
-        matrix_general = joblib.load('static/sparse_matrix.pkl')
+        matrix_general = joblib.load('static/pkl/sparse_matrix.pkl')
     
     if num_samples_general is None:
         num_samples_general = 50
