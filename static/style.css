@@ -118,8 +118,6 @@ button {
     /* Augmente légèrement la taille du bouton lors du survol pour un effet de "punch" */
 }
 
-
-
 button:hover {
     background-color: #bdd0d7;
 }
@@ -159,13 +157,78 @@ a {
     /* Ajoute une transition pour une animation fluide */
 }
 
-    /* Style au survol (hover) */
-    a:hover {
-        color: rgba(13, 110, 253, 1); /* Réduit l'opacité du blanc pour rendre le lien plus transparent */
-    }
+/* Style au survol (hover) */
+a:hover {
+    color: rgba(13, 110, 253, 1); /* Réduit l'opacité du blanc pour rendre le lien plus transparent */
+}
 
 /* Style lorsque le lien est cliqué */
 a:active {
+    color: white; /* Retourne au blanc lorsque le lien est cliqué */
+}
+
+.rated-anime-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Ensures the text inside the h2 is centered */
+}
+
+.rated-anime-list h2 {
+    margin-top: 40px;
+    font-size: 40px; /* Larger font size for prominence */
+    font-weight: bold; /* Bold font weight for emphasis */
+    text-align: center; /* Center-align the text */
     color: white;
-    /* Retourne au blanc lorsque le lien est cliqué */
+}
+
+.anime-list {
+    list-style: none;
+    padding: 0;
+    display: flex; /* Use flexbox layout */
+    justify-content: center; /* Center the items horizontally */
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+    gap: 20px; /* Adjust the gap between items as needed */
+}
+
+.anime-item {
+    width: 350px; /* Fixed width for each item */
+    height: 300px; /* Fixed height for each item */
+    margin: 10px; /* Adjust margin as needed */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.anime-item:hover {
+    transform: scale(1.1); /* Slightly larger than the original size */
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.anime-card {
+    border: 1px solid #ccc; /* Add a border for the card-like appearance */
+    padding: 10px; /* Add padding for spacing inside the card */
+    text-align: center; /* Center-align the content */
+    background-color: white;
+}
+
+.anime-image {
+    width: 100px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center; /* Aligns items vertically in the middle */
+    gap: 30px; /* Adjust the gap between the image and the rating */
+}
+
+.rating {
+    font-size: 20px; /* Adjust the font size to 24 pixels */
+    font-weight: bold; /* Make the rating text bold for emphasis */
+    color: #333; /* Adjust the text color as needed */
+}
+
+.overlay strong {
+    color: black; /* Sets the text color to black */
 }

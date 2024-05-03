@@ -42,7 +42,7 @@
                   {% endfor %}
                 </select>
                 <button onclick="submitRating()">Save to list</button>
-                <button onclick="resetRating()">Reset</button>
+                <button onclick="resetRating()">Remove from list</button>
             </div>
 
             <p>Your rating: <span id="currentRating">{{ session.get('rating_' + request.args.get('Mod_name', ''), 'N/A') }}</span></p>
