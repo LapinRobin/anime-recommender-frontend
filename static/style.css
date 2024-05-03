@@ -258,3 +258,8 @@ a:active {
     color: black; /* Sets the text color to black */
 }
 
+.search-button{
+    color: black; 
+    background-color: rgb(246, 195, 255); 
+    font-weight: bold;
+}
