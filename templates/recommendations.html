@@ -32,7 +32,7 @@
             <h2>Filters</h2>
             <form id="filter-form">
                 <label for="genre">Genre:</label>
-                <select name="genre" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
+                <select title="Select Genre" name="genre" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
                     <option value="">Select Genre</option>
                     <option value="Action">Action</option>
                     <option value="Romance">Romance</option>
@@ -40,7 +40,7 @@
                 </select>
                 <br />
                 <label for="type">Type:</label>
-                <select name="type" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
+                <select title="Select Type" name="type" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
                     <option value="">Select Type</option>
                     <option value="TV">TV</option>
                     <option value="Movie">Movie</option>
@@ -51,7 +51,7 @@
         </div>
         <div id="result-section">
             <h2>Results</h2>
-            <div id="loading" style="display:none;">Loading...</div>
+            <div id="loading" class="loading"</div>
             <!-- Results will be loaded here -->
         </div>
     </div>
