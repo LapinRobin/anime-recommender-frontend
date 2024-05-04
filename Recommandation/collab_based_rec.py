@@ -190,7 +190,7 @@ def recommend_collab_anime(anime_recs, liked_anime_list, min_count=2, min_mean=7
     - FileNotFoundError: If the anime list file does not exist.
     - ValueError: If the input data is not in the expected format.
     """
-    anime_list = pd.read_parquet('anime/anime.parquet')
+    anime_list = pd.read_parquet('static/parquet/anime.parquet')
     merged = pd.merge(anime_recs, anime_list, how='inner', on='anime_id')
 
     liked_anime_ids = [anime_id for anime_id, _ in liked_anime_list]

@@ -12,6 +12,36 @@
         #container { display: flex; }
         #filter-section { width: 20%; }
         #result-section { width: 80%; }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        .card-header {
+            background-color: #007bff; /* Blue header */
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .form-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            margin-bottom: 20px;
+        }
+        .form-card label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .form-card input[type="radio"] {
+            margin-right: 10px;
+        }
     </style>
     <title>Recommendations</title>
 </head>
@@ -28,31 +58,73 @@
     </div>
 
     <div id="container">
-        <div id="filter-section">
-            <h2>Filters</h2>
-            <form id="filter-form">
-                <label for="genre">Genre:</label>
-                <select name="genre" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
-                    <option value="">Select Genre</option>
-                    <option value="Action">Action</option>
-                    <option value="Romance">Romance</option>
-                    <!-- Add more genres as needed -->
-                </select>
-                <br />
-                <label for="type">Type:</label>
-                <select name="type" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
-                    <option value="">Select Type</option>
-                    <option value="TV">TV</option>
-                    <option value="Movie">Movie</option>
-                    <!-- Add more types as needed -->
-                </select>
-                <!-- Additional filters can be added here -->
-            </form>
+        <div id="filter-section" class="card">
+                <form id="filter-form" action="/recommendations" method="POST">
+                    <div class="mb-3">
+                        <label for="genre">Genre:</label>
+                        <select class="form-select" name="genre" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
+                            <option value="">Select Genre</option>
+                            <option value="Action">Action</option>
+                            <option value="Romance">Romance</option>
+                            <!-- Add more genres as needed -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type">Type:</label>
+                        <select class="form-select" name="type" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
+                            <option value="">Select Type</option>
+                            <option value="TV">TV</option>
+                            <option value="Movie">Movie</option>
+                            <!-- Add more types as needed -->
+                        </select>
+                    </div>
+                    <fieldset class="mb-3">
+                        <legend style="white-space: nowrap; font-size: 18px;">Recommendation Method:</legend>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="content-based" name="recommendation-method" value="content-based">
+                            <label class="form-check-label" for="content-based">Content-Based</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="collaborative-filtering" name="recommendation-method" value="collaborative-filtering">
+                            <label class="form-check-label" for="collaborative-filtering" style="margin-right: 20px;">Collaborative Filtering</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="merge" name="recommendation-method" value="merge">
+                            <label class="form-check-label" for="merge"  style="margin-right: 20px;" >Merge (Content-Based and Collaborative Filtering)</label>
+                        </div>
+                    </fieldset>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="exclude-same-series" name="exclude-same-series" value="exclude-same-series">
+                        <label class="form-check-label" for="exclude-same-series" style="margin-right: 20px;">Exclude anime from the same series</label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                         <button type="submit" class="search-button" style= "margin-top: 120px ; border-radius: 5px ;">Apply filters</button>
+                    </div>
+
+                </form>
+
         </div>
         <div id="result-section">
             <h2>Results</h2>
             <div id="loading" style="display:none;">Loading...</div>
-            <!-- Results will be loaded here -->
+            <ul class="anime-list">
+                {% for anime in recommended_list %}
+                <li class="anime-item">
+                    <a href="/description?Mod_name={{ anime['Mod_name'] | urlencode }}" style="display: block;">
+                        <div class="card-overlay">
+                            <strong style="font-size: 1.2em;">{{ anime['Name'] }}</strong>
+                            <br></br>
+                            <div class="rating-container">
+                                <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="anime-image">
+                                <!-- No rating displayed here -->
+                            </div>
+                            <!-- Add more details as needed -->
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </body>

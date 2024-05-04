@@ -22,6 +22,9 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
 from general_chatbot import list_to_string, tool_example_to_messages, Data, Anime
 
+from Recommandation.main import *
+
+
 app = Flask(__name__)
 app.secret_key = 'secret'
 
@@ -51,7 +54,7 @@ def index():
             }
             for mod_name in rated_anime.keys() if get_anime_details_by_mod_name(mod_name) is not None
         }
-
+        #print(anime_details)
         # Identify and remove any entries that did not have details available
         to_remove = [mod_name for mod_name, details in anime_details.items() if not details]
         for mod_name in to_remove:
@@ -68,12 +71,57 @@ def get_anime_details_by_mod_name(mod_name):
         return None
     return anime.iloc[0].to_dict()
 
+def get_anime_details_by_anime_id(anime_id):
+    anime = anime_parquet[anime_parquet['anime_id'] == anime_id]
+    if anime.empty:
+        return None
+    return anime.iloc[0].to_dict()
+
 
 # Separate route for recommendations
-@app.route('/recommendations')
+@app.route('/recommendations', methods=['GET', 'POST'])
 def recommendations():
-    recommand_list = session.get('recommand_list', [])
-    return render_template('recommendation.html', recommand_list=recommand_list)
+    if request.method == 'GET':
+        # Calculate recommended lists only when accessed via GET method
+        recommend_list = session.get('recommend_list', [])
+        recommended_list_content = recommandation_anime_content_based(recommend_list)[:10]
+        recommended_list_collab = recommandation_anime_collab_based(recommend_list)[:10]
+
+        # Store the calculated lists in session variables
+        session['recommended_list_content'] = recommended_list_content
+        session['recommended_list_collab'] = recommended_list_collab
+
+        anime_details_collab = []
+        for anime_id in recommended_list_collab:
+            anime_detail_collab = get_anime_details_by_anime_id(anime_id)
+            if anime_detail_collab:
+                anime_details_collab.append(anime_detail_collab)
+
+        return render_template('recommendations.html', recommended_list=anime_details_collab)
+
+    elif request.method == 'POST':
+        # If accessed via POST method, retrieve the stored lists from session variables
+        print("bonjour")
+        recommended_list_content = session.get('recommended_list_content', [])
+        recommended_list_collab = session.get('recommended_list_collab', [])
+
+        # Apply filtering based on form data
+        recommendation_method = request.form.get('recommendation-method')
+        exclude_same_series = request.form.get('exclude-same-series') == 'exclude-same-series'
+
+        if recommendation_method == 'content-based':
+            recommended_list = recommended_list_content
+        elif recommendation_method == 'collaborative-filtering':
+            recommended_list = recommended_list_collab
+        anime_details = []
+        for anime_id in recommended_list:
+            anime_detail = get_anime_details_by_anime_id(anime_id)
+            # print(anime_detail_collab)
+            if anime_detail:
+                anime_details.append(anime_detail)
+
+        return render_template('recommendations.html', recommended_list=anime_details)
+
 
 
 @app.route('/search', methods=['GET'])
@@ -328,7 +376,7 @@ def get_response_general_chatbot():
         general_prompt = ChatPromptTemplate.from_template(
             """Respond to the following question:
 
-            Request: {request}
+            Request : {request}
             Answer:
             """
         )

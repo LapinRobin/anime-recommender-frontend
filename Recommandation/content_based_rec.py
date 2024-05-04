@@ -1,3 +1,4 @@
+import joblib
 import numpy as np
 import pandas as pd
 import math
@@ -332,12 +333,15 @@ def preprocess_fav_anime_list(fav_anime_list, anime_list, feature):
 
 def get_recommandation_content_tab(fav_anime_list):
 
-    anime_list = pd.read_parquet('anime/anime.parquet')
+    anime_list = pd.read_parquet('static/parquet/anime.parquet')
     anime_list = preprocess(anime_list)
 
-    tfidf = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = tfidf.fit_transform(anime_list['Synopsis'])
-    cosine_synopsis = linear_kernel(tfidf_matrix, tfidf_matrix)
+    #tfidf = TfidfVectorizer(stop_words='english')
+    #tfidf_matrix = joblib.load('sparse_matrix.pkl')
+    #tfidf_matrix = tfidf.fit_transform(anime_list['Synopsis'])
+    #cosine_synopsis = linear_kernel(tfidf_matrix, tfidf_matrix)
+    cosine_synopsis = np.load('Recommandation/cosine_synopsis.npy')
+    #np.save('cosine_synopsis.npy', cosine_synopsis)
 
     genre_cosine_similarities_tab = recommendation_genre_based(preprocess_fav_anime_list(fav_anime_list, anime_list, 'genre'), anime_list)
     genre_cosine_similarities_tab = adjust_dispersion(genre_cosine_similarities_tab)
