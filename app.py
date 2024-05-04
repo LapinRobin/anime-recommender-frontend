@@ -125,17 +125,16 @@ def recommendations():
             if anime_detail:
                 anime_details.append(anime_detail)
         print(recommended_list)
-        return render_template('recommendations.html', recommended_list=anime_details)
+        return redirect(url_for('recommendations_get', anime_details=anime_details))
+
 
 @app.route('/recommendations-get', methods=['GET'])
 def recommendations_get():
-    # Récupération des données à partir des paramètres d'URL
+    # Retrieve 'anime_details' from the query parameters if it exists
     anime_details = request.args.get('anime_details')
 
-    # Code pour le traitement GET spécifique après la soumission du formulaire POST
-
-    return render_template('recommendations.html',
-                           recommended_list=anime_details)  # Rendu d'un autre modèle, par exemple
+    # Your existing logic to handle the data passed to recommendations-get
+    return render_template('recommendations.html', recommended_list=anime_details)
 @app.route('/search' , methods=['GET'])
 def search():
     Mod_name = request.args.get('Mod_name')

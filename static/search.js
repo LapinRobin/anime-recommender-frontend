@@ -27,6 +27,7 @@ $(document).ready(function() {
         let action = $(this).attr('action');
          if (action === '/recommendations') {
              let formData = $(this).serialize(); // Serialize form data
+
             $.post("/recommendations", formData, function(response) {
             // Redirect to recommendations page
             window.location.href = '/recommendations';
