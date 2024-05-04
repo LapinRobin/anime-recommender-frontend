@@ -84,9 +84,15 @@ def recommendations():
     if request.method == 'GET':
         # Calculate recommended lists only when accessed via GET method
         recommend_list = session.get('recommend_list', [])
+        #anime_details = request.args.get('recommended_list')
+        #print("Je suis ici "+str(anime_details))
+        #if anime_details :
+            #print("Je suis ici ")
+
+        #print("liste de recommandation "+ str(recommend_list))
         recommended_list_content = recommandation_anime_content_based(recommend_list)[:10]
         recommended_list_collab = recommandation_anime_collab_based(recommend_list)[:10]
-
+        show_names(recommended_list_content , anime_parquet)
         # Store the calculated lists in session variables
         session['recommended_list_content'] = recommended_list_content
         session['recommended_list_collab'] = recommended_list_collab
@@ -108,7 +114,7 @@ def recommendations():
         # Apply filtering based on form data
         recommendation_method = request.form.get('recommendation-method')
         exclude_same_series = request.form.get('exclude-same-series') == 'exclude-same-series'
-
+        print("recommended "+recommendation_method)
         if recommendation_method == 'content-based':
             recommended_list = recommended_list_content
         elif recommendation_method == 'collaborative-filtering':
@@ -116,15 +122,21 @@ def recommendations():
         anime_details = []
         for anime_id in recommended_list:
             anime_detail = get_anime_details_by_anime_id(anime_id)
-            # print(anime_detail_collab)
             if anime_detail:
                 anime_details.append(anime_detail)
-
+        print(recommended_list)
         return render_template('recommendations.html', recommended_list=anime_details)
 
+@app.route('/recommendations-get', methods=['GET'])
+def recommendations_get():
+    # Récupération des données à partir des paramètres d'URL
+    anime_details = request.args.get('anime_details')
 
+    # Code pour le traitement GET spécifique après la soumission du formulaire POST
 
-@app.route('/search', methods=['GET'])
+    return render_template('recommendations.html',
+                           recommended_list=anime_details)  # Rendu d'un autre modèle, par exemple
+@app.route('/search' , methods=['GET'])
 def search():
     Mod_name = request.args.get('Mod_name')
 
