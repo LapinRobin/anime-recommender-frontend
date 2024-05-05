@@ -333,14 +333,14 @@ def preprocess_fav_anime_list(fav_anime_list, anime_list, feature):
 
 def get_recommandation_content_tab(fav_anime_list):
 
-    anime_list = pd.read_parquet('static/parquet/anime.parquet')
-    anime_list = preprocess(anime_list)
+
+    anime_list = pd.read_parquet('static/parquet/preprocessed_anime_list.parquet')
 
     #tfidf = TfidfVectorizer(stop_words='english')
-    #tfidf_matrix = joblib.load('sparse_matrix.pkl')
+    tfidf_matrix = joblib.load('sparse_matrix.pkl')
     #tfidf_matrix = tfidf.fit_transform(anime_list['Synopsis'])
-    #cosine_synopsis = linear_kernel(tfidf_matrix, tfidf_matrix)
-    cosine_synopsis = np.load('Recommandation/cosine_synopsis.npy')
+    cosine_synopsis = linear_kernel(tfidf_matrix, tfidf_matrix)
+    #cosine_synopsis = np.load('Recommandation/cosine_synopsis.npy')
     #np.save('cosine_synopsis.npy', cosine_synopsis)
 
     genre_cosine_similarities_tab = recommendation_genre_based(preprocess_fav_anime_list(fav_anime_list, anime_list, 'genre'), anime_list)
@@ -384,5 +384,5 @@ def get_recommandation_content_tab(fav_anime_list):
 
     combined_tab = combined_tab[['anime_id', 'total_similarity']]
     combined_tab.rename(columns={'total_similarity': 'recommend_score'}, inplace=True)
-
+    combined_tab = combined_tab.sort_values('recommend_score', ascending=False)
     return combined_tab

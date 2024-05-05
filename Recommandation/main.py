@@ -9,6 +9,17 @@ anime_list = pd.read_parquet('static/parquet/anime.parquet')
 
 
 def filter_anime_name(fav_anime_list, recommended_animes):
+    """
+            Filters the anime_list based on their anime. If a recommended anime is contained
+            in one of the series of fav_anime_list , it is removed
+
+            Parameters:
+            - fav_anime_list (Python List): a list containing the ids of the favorite animes and their rating.
+            -recommended_animes (List of Anime_ids) : a list containing the recommended_animes
+
+            Returns:
+            - the List of the favorite animes filtered
+            """
     fav_anime_ids = [anime_id for anime_id, _ in fav_anime_list]
     fav_anime_list_names = anime_list[anime_list['anime_id'].isin(fav_anime_ids)]['Name']
     recommended_animes_names = recommended_animes['Name']
@@ -48,6 +59,16 @@ def merge_score(collab_tab, content_tab):
 
 
 def recommendation_anime(fav_anime_list, filter_name=0):
+    """
+            Generates a ranked list of anime recommendations based on the merge of the collaborative filtering and content Filtering .
+
+            Parameters:
+            - fav_anime_list (Python List): a list containing the ids of the favorite animes and their rating.
+            -filter_name (int, optional) = if equal 1 returns the Favorite animes that does not belong to the same serie
+
+            Returns:
+            - the List of the 200 favorite animes
+    """
     collab_tab = get_recommandation_collab_tab(fav_anime_list)
     content_tab = get_recommandation_content_tab(fav_anime_list)
 
@@ -94,6 +115,16 @@ def get_recommandation_merge(collab_tab, content_tab, filter_name=0):
 
 
 def recommandation_anime_content_based(fav_anime_list, filter_name=0):
+    """
+        Generates a ranked list of anime recommendations based on the content of the favortie animes  and their ratings.
+
+        Parameters:
+        - fav_anime_list (Python List): a list containing the ids of the favorite animes and their rating.
+        -filter_name (int, optional) = if equal 1 returns the Favorite animes that does not belong to the same serie
+
+        Returns:
+        - the List of the 200 favorite animes
+    """
     content_tab = get_recommandation_content_tab(fav_anime_list)
     # print(content_tab)
     sorted_df = content_tab.sort_values(by='recommend_score', ascending=False)
@@ -107,10 +138,20 @@ def recommandation_anime_content_based(fav_anime_list, filter_name=0):
         anime_names = pd.DataFrame(recommended_animes)
         top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
 
-    return top_anime_ids[:200]
+    return top_anime_ids
 
 
 def recommandation_anime_collab_based(fav_anime_list, filter_name=0):
+    """
+            Generates a ranked list of anime recommendations based on the ratings of the other users.
+
+            Parameters:
+            - fav_anime_list (Python List): a list containing the ids of the favorite animes and their rating.
+            -filter_name (int, optional) = if equal 1 returns the Favorite animes that does not belong to the same serie
+
+            Returns:
+            - the List of the 200 favorite animes
+    """
     collab_tab = get_recommandation_collab_tab(fav_anime_list)
     print(collab_tab.shape)
 

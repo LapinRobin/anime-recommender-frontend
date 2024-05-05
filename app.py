@@ -134,7 +134,7 @@ def recommendations_get():
     anime_details = request.args.get('anime_details')
 
     # Your existing logic to handle the data passed to recommendations-get
-    return render_template('recommendations.html', recommended_list=anime_details)
+    return render_template('recommendations2.html', recommended_list=anime_details)
 @app.route('/search' , methods=['GET'])
 def search():
     Mod_name = request.args.get('Mod_name')
