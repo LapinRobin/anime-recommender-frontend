@@ -46,7 +46,7 @@ const getChatResponse = async (incomingChatDiv) => {
     try {
         // Appeler l'API Flask pour obtenir la réponse
         const response = await (await fetch('/get_response_general_chatbot', requestOptions)).json();
-        console.log(response)
+        //console.log(response)
         if (response.hasOwnProperty('kwargs')) {
             pElement.textContent = response.kwargs.content;
         } else {
