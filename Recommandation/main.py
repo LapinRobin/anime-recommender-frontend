@@ -86,7 +86,7 @@ def recommendation_anime(fav_anime_list, filter_name=0):
         anime_names = pd.DataFrame(recommended_animes)
         top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
 
-    return top_anime_ids[:30]
+    return top_anime_ids
 
 def filter_anime_name_based(fav_anime_list , recommended_anime_ids):
     recommended_animes = []
