@@ -1,7 +1,7 @@
 import os
 import time
-from Recommandation.collab_based_rec import *
-from Recommandation.content_based_rec import *
+from Recommendation.collab_based_rec import *
+from Recommendation.content_based_rec import *
 
 fav_anime_list = [(21, 10), (1, 5)]
 # filter_name = 0
