@@ -1,5 +1,5 @@
-$(document).ready(function () {
-    $("input[name='Mod_name']").on('input', function () {
+$(document).ready(function() {
+    $("input[name='Mod_name']").on('input', function() {
         let inputVal = $(this).val();
         if (inputVal.length > 1) { // Check to reduce unnecessary requests
             $.ajax({
@@ -19,21 +19,10 @@ $(document).ready(function () {
         }
     });
 
-    $("form").on('submit', function (event) {
-        //event.preventDefault(); // Prevent the normal form submission
-        //let inputVal = $("input[name='Mod_name']").val();
-        //window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
-        event.preventDefault(); // Prevent the normal form submission
-        // let action = $(this).attr('action');
-        // if not filter action
-        // if (!$(this).attr('action').includes('filter')) {
-        //     let inputVal = $("input[name='Mod_name']").val();
-        //     window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
-        // }
-            // let inputVal = $("input[name='Mod_name']").val();
-        // window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
-
-
-    });
+    // $("form").on('submit', function(event) {
+    //     event.preventDefault(); // Prevent the normal form submission
+    //     let inputVal = $("input[name='Mod_name']").val();
+    //     window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
+    // });
 
 });

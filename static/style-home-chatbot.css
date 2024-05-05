@@ -6,27 +6,18 @@
   font-family: "Poppins", sans-serif;
 }
 
-html, body {
-    height: 100%; /* S'assure que le html et body prennent toute la hauteur de la fenêtre du navigateur */
-    width: 100%;  /* Ajoutez la largeur à 100% pour couvrir toute la largeur */
-    margin: 0;
-    padding: 0;
+.home-chatbot-box-center{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background: none; /* Assurez-vous qu'il n'y a pas de fond réglé sur body qui pourrait interférer */
-}
-
-html {
-    background-image: url("images/placeholder.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    flex-direction: column; /* Organise les enfants en colonne */
+    align-items: center; /* Centre les enfants verticalement */
+    justify-content: center; /* Centre les enfants horizontalement */
+    height: 100vh; /* Prend toute la hauteur de la fenêtre du navigateur */
+    text-align: center; /* Assure que le texte est centré à l'intérieur des blocs enfants */
 }
 
 .container {
     text-align: center;
-    width: auto;
+    width: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,6 +30,17 @@ html {
     border-radius: 20px; 
 }
 
+.container h1 {
+    font-size: 3em; /* Taille de la police pour les grands écrans */
+    font-weight: 600;
+    color: black;
+}
+
+.container p {
+    margin-top: 4vh;
+    font-size: 1.2em; /* Taille standard pour le texte */
+}
+
 .btn-group {
     display: flex;
     flex-direction: row;  
@@ -49,6 +51,7 @@ html {
 .btn {
     margin: 20px; 
     padding: 10px 20px; 
+    border-radius: 1.4vh;
 }
 
 .btn-primary {
@@ -65,4 +68,24 @@ html {
 
 .btn:hover {
     background-color: grey;
+}
+
+/* Style par défaut pour les liens */
+a {
+    color: white;
+    /* Couleur du texte blanc */
+    text-decoration: none;
+    /* Supprime le soulignement par défaut */
+    transition: color 0.3s ease;
+    /* Ajoute une transition pour une animation fluide */
+}
+
+/* Style au survol (hover) */
+a:hover {
+    color: rgba(13, 110, 253, 1); /* Réduit l'opacité du blanc pour rendre le lien plus transparent */
+}
+
+/* Style lorsque le lien est cliqué */
+a:active {
+    color: white; /* Retourne au blanc lorsque le lien est cliqué */
 }

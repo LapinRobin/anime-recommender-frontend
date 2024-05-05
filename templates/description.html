@@ -14,113 +14,121 @@
 <body onload="retrieveRating()">
     <div id="header">
         <h1><a href="/">Anime Atlas</a></h1>
+        <h2><a href="/recommendations">Recommend me</a></h2>
+        <h2><a href="/home-chatbot">Chat</a></h2>
         <form action="/description" method="post">
             <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
             <datalist id="anime-suggestions">
                 <!-- Suggestions will be dynamically filled here -->
             </datalist>
-            <button type="submit">Search</button>
+            <button type="submit" class="search-button">Search</button>
         </form>
     </div>
 
     <div class="container mt-5">
         <div class="overlay">
             {% if anime %}
-                <h1 style="margin-bottom:17px;">
+                <h1 class="name-anime-description">
                     {% if anime['English name'] == "UNKNOWN" %}
                         {{ anime['Name'] }}
                     {% else %}
                         {{ anime['English name'] }}
                     {% endif %}
                 </h1>
-                <div class="rating-section">
-                <label for="rating">Your Rating (1-10):</label>
-                <select id="rating" name="rating">
-                  {% set current_rating = session.get('rating_' + request.args.get('Mod_name', ''), '') %}
-                  {% for i in range(1, 11) %}
-                    <option value="{{ i }}" {% if current_rating == i %}selected{% endif %}>{{ i }}</option>
-                  {% endfor %}
-                </select>
-                <button onclick="submitRating()">Save to list</button>
-                <button onclick="resetRating()">Remove from list</button>
-            </div>
-
-            <p>Your rating: <span id="currentRating">{{ session.get('rating_' + request.args.get('Mod_name', ''), 'N/A') }}</span></p>
-
             <script>
-            function submitRating() {
-                var modName = '{{ request.args.get('Mod_name', '') }}';  // Fetch Mod_name from the URL query parameters
-                var rating = document.getElementById('rating').value;
-                fetch('/rate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'mod_name=' + encodeURIComponent(modName) + '&rating=' + rating
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          console.log('Rating submitted:', data);
-                          document.getElementById('currentRating').innerText = rating;  // Update the displayed rating
-                      } else {
-                          console.error('Failed to submit rating');
-                      }
-                  });
-            }
-
-            function resetRating() {
-                var modName = '{{ request.args.get('Mod_name', '') }}';  // Fetch Mod_name from the URL query parameters
-                fetch('/reset_rating', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'mod_name=' + encodeURIComponent(modName)
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          console.log('Rating reset:', data);
-                          document.getElementById('rating').value = '';  // Reset the rating input field
-                          document.getElementById('currentRating').innerText = 'N/A';  // Update the displayed rating to N/A
-                      } else {
-                          console.error('Failed to reset rating');
-                      }
-                  });
-            }
-
-            function retrieveRating() {
-                var modName = '{{ request.args.get('Mod_name', '') }}';  // Fetch Mod_name from the URL query parameters
-                fetch('/retrieve_rating?mod_name=' + encodeURIComponent(modName))
-                    .then(response => response.json())
+                function submitRating() {
+                    var modName = '{{ request.args.get('Mod_name', '') }}';  // Fetch Mod_name from the URL query parameters
+                    var rating = document.getElementById('rating').value;
+                    fetch('/rate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'mod_name=' + encodeURIComponent(modName) + '&rating=' + rating
+                    }).then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            console.log('Rating retrieved:', data);
-                            document.getElementById('currentRating').innerText = data.rating;  // Update the displayed rating
+                            console.log('Rating submitted:', data);
+                            document.getElementById('currentRating').innerText = rating;  // Update the displayed rating
                         } else {
-                            console.error('Failed to retrieve rating');
+                            console.error('Failed to submit rating');
                         }
                     });
-            }
+                }
+
+                function resetRating() {
+                    var modName = '{{ request.args.get('Mod_name', '') }}';  // Fetch Mod_name from the URL query parameters
+                    fetch('/reset_rating', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'mod_name=' + encodeURIComponent(modName)
+                    }).then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Rating reset:', data);
+                            document.getElementById('rating').value = '';  // Reset the rating input field
+                            document.getElementById('currentRating').innerText = 'N/A';  // Update the displayed rating to N/A
+                        } else {
+                            console.error('Failed to reset rating');
+                        }
+                    });
+                }
+
+                function retrieveRating() {
+                    var modName = '{{ request.args.get('Mod_name', '') }}';  // Fetch Mod_name from the URL query parameters
+                    fetch('/retrieve_rating?mod_name=' + encodeURIComponent(modName))
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('Rating retrieved:', data);
+                                document.getElementById('currentRating').innerText = data.rating;  // Update the displayed rating
+                            } else {
+                                console.error('Failed to retrieve rating');
+                            }
+                        });
+                }
             </script>
 
-            <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid" style="margin-bottom:10px";>
-            <p><strong>Other names:</strong> {{ anime['Other name'] }}</p>
-            <p><strong>Genres:</strong> {{ anime['Genres'] }}</p>
-            <p><strong>Synopsis:</strong> {{ anime['Synopsis'] }}</p>
-            <p><strong>Type:</strong> {{ anime['Type'] }}</p>
-            <p><strong>Episodes:</strong> {{ anime['Episodes'] }}</p>
-            <p><strong>Aired:</strong> {{ anime['Aired'] }}</p>
-            <p><strong>Premiered:</strong> {{ anime['Premiered'] }}</p>
-            <p><strong>Status:</strong> {{ anime['Status'] }}</p>
-            <p><strong>Studios:</strong> {{ anime['Studios'] }}</p>
-            <p><strong>Source:</strong> {{ anime['Source'] }}</p>
-            <p><strong>Duration:</strong> {{ anime['Duration'] }}</p>
-            <p><strong>Rating:</strong> {{ anime['Rating'] }}</p>
-            <p><strong>Rank:</strong> {{ anime['Rank'] }}</p>
-            <p><strong>Popularity:</strong> {{ anime['Popularity'] }}</p>
-            <p><strong>Favorites:</strong> {{ anime['Favorites'] }}</p>
-            <p><strong>Scored By:</strong> {{ anime['Scored By'] }}</p>
-            <p><strong>Members:</strong> {{ anime['Members'] }}</p>
+            <div class="content-row">
+                <img src="{{ anime['Image URL'] }}" alt="{{ anime['Name'] }}" class="img-fluid image-description-page">
+                <div class="rating-box">
+                    <div class="rating-section">
+                        <label for="rating" class="bold-style">Your Rating (1-10)&nbsp;:</label>
+                        <select id="rating" name="rating" class="rating-box-select">
+                            {% set current_rating = session.get('rating_' + request.args.get('Mod_name', ''), '') %}
+                            {% for i in range(1, 11) %}
+                                <option value="{{ i }}" {% if current_rating == i %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                        <button onclick="submitRating()" class="search-button submit-rating">Save to list</button>
+                        <button onclick="resetRating()" class="search-button">Remove from list</button>
+                    </div>
+                    <p style="font-weight: bold;">Your rating&nbsp;: <span id="currentRating">{{ session.get('rating_' + request.args.get('Mod_name', ''), 'N/A') }}</span></p>
+                    <p><strong>Synopsis&nbsp;:</strong> {{ anime['Synopsis'] }}</p>
+                </div>
+                
+            </div>
+            <div class="anime-info-grid">
+                <p><strong>Genres&nbsp;:</strong> {{ anime['Genres'] }}</p>
+                <p><strong>Type&nbsp;:</strong> {{ anime['Type'] }}</p>
+                <p><strong>Other names :</strong> {{ anime['Other name'] }}</p>
+                <p><strong>Episodes :</strong> {{ anime['Episodes'] }}</p>
+                <p><strong>Aired :</strong> {{ anime['Aired'] }}</p>
+                <p><strong>Premiered :</strong> {{ anime['Premiered'] }}</p>
+                <p><strong>Status :</strong> {{ anime['Status'] }}</p>
+                <p><strong>Studios :</strong> {{ anime['Studios'] }}</p>
+                <p><strong>Source :</strong> {{ anime['Source'] }}</p>
+                <p><strong>Duration :</strong> {{ anime['Duration'] }}</p>
+                <p><strong>Rating :</strong> {{ anime['Rating'] }}</p>
+                <p><strong>Rank :</strong> {{ anime['Rank'] }}</p>
+                <p><strong>Popularity :</strong> {{ anime['Popularity'] }}</p>
+                <p><strong>Favorites :</strong> {{ anime['Favorites'] }}</p>
+                <p><strong>Scored By :</strong> {{ anime['Scored By'] }}</p>
+                <p><strong>Members :</strong> {{ anime['Members'] }}</p>
+            </div>
+            
             {% else %}
             <h2>No anime found with the given ID.</h2>
             {% endif %}
