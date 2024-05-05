@@ -104,6 +104,10 @@ button:hover {
   background-color: #47ceff;
 }
 
+.title {
+  font-size: 3.3rem;
+}
+
 :root {
   --text-color: #FFFFFF;
   --icon-color: #ACACBE;

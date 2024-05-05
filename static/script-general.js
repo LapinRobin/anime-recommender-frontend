@@ -15,7 +15,7 @@ const loadDataFromLocalstorage = () => {
     themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
 
     const defaultText = `<div class="default-text">
-                            <h1>Anime Atlas</h1>
+                            <text class="title">Anime Atlas</text>
                             <p>Start a conversation and find your anime.<br> </p>
                         </div>`
 
