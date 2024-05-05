@@ -10,6 +10,14 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{url_for('static', filename='search.js')}}"></script>
     
+    <script>
+        const embedFilesSubtitlesChatbot = async () => {
+            await fetch('/embed_files');
+        }
+
+        embedFilesSubtitlesChatbot()
+    </script>
+
     <div id="header">
         <h1><a href="/">Anime Atlas</a></h1>
         <h2><a href="/recommendations">Recommend me</a></h2>
