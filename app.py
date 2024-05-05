@@ -79,9 +79,9 @@ def get_anime_details_by_anime_id(anime_id):
 
 
 # Separate route for recommendations
-@app.route('/recommendations', methods=['GET', 'POST'])
+@app.route('/recommendations', methods=['GET'])
 def recommendations():
-    if request.method == 'GET':
+
         # Calculate recommended lists only when accessed via GET method
         recommend_list = session.get('recommend_list', [])
         #anime_details = request.args.get('recommended_list')
@@ -105,27 +105,27 @@ def recommendations():
 
         return render_template('recommendations.html', recommended_list=anime_details_collab)
 
-    elif request.method == 'POST':
-        # If accessed via POST method, retrieve the stored lists from session variables
-        print("bonjour")
-        recommended_list_content = session.get('recommended_list_content', [])
-        recommended_list_collab = session.get('recommended_list_collab', [])
-
-        # Apply filtering based on form data
-        recommendation_method = request.form.get('recommendation-method')
-        exclude_same_series = request.form.get('exclude-same-series') == 'exclude-same-series'
-        print("recommended "+recommendation_method)
-        if recommendation_method == 'content-based':
-            recommended_list = recommended_list_content
-        elif recommendation_method == 'collaborative-filtering':
-            recommended_list = recommended_list_collab
-        anime_details = []
-        for anime_id in recommended_list:
-            anime_detail = get_anime_details_by_anime_id(anime_id)
-            if anime_detail:
-                anime_details.append(anime_detail)
-        print(recommended_list)
-        return redirect(url_for('recommendations_get', anime_details=anime_details))
+    # elif request.method == 'POST':
+    #     # If accessed via POST method, retrieve the stored lists from session variables
+    #     print("bonjour")
+    #     recommended_list_content = session.get('recommended_list_content', [])
+    #     recommended_list_collab = session.get('recommended_list_collab', [])
+    #
+    #     # Apply filtering based on form data
+    #     recommendation_method = request.form.get('recommendation-method')
+    #     exclude_same_series = request.form.get('exclude-same-series') == 'exclude-same-series'
+    #     print("recommended "+recommendation_method)
+    #     if recommendation_method == 'content-based':
+    #         recommended_list = recommended_list_content
+    #     elif recommendation_method == 'collaborative-filtering':
+    #         recommended_list = recommended_list_collab
+    #     anime_details = []
+    #     for anime_id in recommended_list:
+    #         anime_detail = get_anime_details_by_anime_id(anime_id)
+    #         if anime_detail:
+    #             anime_details.append(anime_detail)
+    #     print(recommended_list)
+    #     return redirect(url_for('recommendations_get', anime_details=anime_details))
 
 
 @app.route('/recommendations-get', methods=['GET'])
@@ -135,6 +135,47 @@ def recommendations_get():
 
     # Your existing logic to handle the data passed to recommendations-get
     return render_template('recommendations2.html', recommended_list=anime_details)
+
+# This is the route that will handle the form submission in the recommendations page
+@app.route('/recommendations2', methods=['GET'])
+def recommendations2():
+        recommend_list = session.get('recommend_list', [])
+
+        genre = request.args.get('genre', '')
+        type_ = request.args.get('type', '')
+        recommendation_method = request.args.get('recommendation-method')
+
+        recommended_list_content = session.get('recommended_list_content', [])
+        session['recommended_list_content'] = recommended_list_content
+        recommended_list_collab = session.get('recommended_list_collab', [])
+        session['recommended_list_collab'] = recommended_list_collab
+
+        if session.get('recommended_list_content') is None:
+            recommended_list_content = recommandation_anime_content_based(recommend_list)[:10]
+        if session.get('recommended_list_collab') is None:
+            recommended_list_collab = recommandation_anime_collab_based(recommend_list)[:10]
+
+
+
+        anime_details= []
+        for anime_id in recommended_list_collab:
+            anime_detail = get_anime_details_by_anime_id(anime_id)
+            if anime_detail:
+                if recommendation_method == 'content-based':
+                    if genre and genre not in anime_detail['Genres']:
+                        continue
+                    if type_ and type_ != anime_detail['Type']:
+                        continue
+                    anime_details.append(anime_detail)
+                elif recommendation_method == 'collaborative-filtering':
+                    if genre and genre not in anime_detail['Genres']:
+                        continue
+                    if type_ and type_ != anime_detail['Type']:
+                        continue
+                    anime_details.append(anime_detail)
+
+        return render_template('recommendations2.html', recommended_list=anime_details)
+
 @app.route('/search' , methods=['GET'])
 def search():
     Mod_name = request.args.get('Mod_name')
