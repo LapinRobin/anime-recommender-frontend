@@ -138,7 +138,7 @@ def recommandation_anime_content_based(fav_anime_list, filter_name=0):
         anime_names = pd.DataFrame(recommended_animes)
         top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
 
-    return top_anime_ids
+    return top_anime_ids[:200]
 
 
 def recommandation_anime_collab_based(fav_anime_list, filter_name=0):

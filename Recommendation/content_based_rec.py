@@ -337,7 +337,7 @@ def get_recommandation_content_tab(fav_anime_list):
     anime_list = pd.read_parquet('static/parquet/preprocessed_anime_list.parquet')
 
     #tfidf = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = joblib.load('sparse_matrix.pkl')
+    tfidf_matrix = joblib.load('Recommendation/sparse_matrix.pkl')
     #tfidf_matrix = tfidf.fit_transform(anime_list['Synopsis'])
     cosine_synopsis = linear_kernel(tfidf_matrix, tfidf_matrix)
     #cosine_synopsis = np.load('Recommandation/cosine_synopsis.npy')
