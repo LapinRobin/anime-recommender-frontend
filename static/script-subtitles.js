@@ -6,7 +6,7 @@ const deleteButton = document.querySelector("#delete-btn");
 
 let userText = null;
 
-const loadDataFromLocalstorage = () => {
+const loadDataFromLocalstorage = async () => {
 
     // Load saved chats and theme from local storage and apply/add on the page
     const themeColor = localStorage.getItem("themeColor");
@@ -23,12 +23,7 @@ const loadDataFromLocalstorage = () => {
     chatContainer.scrollTo(0, chatContainer.scrollHeight); // Scroll to bottom of the chat container
 
     // Embedding
-    const response = fetch('/embed_files');
-
-    if (!response.ok) {
-        console.error("Failed to load and process files");
-        return;
-    }
+    await fetch('/embed_files');
 }
 
 const createChatElement = (content, className) => {
