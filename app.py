@@ -77,7 +77,88 @@ def get_anime_details_by_anime_id(anime_id):
         return None
     return anime.iloc[0].to_dict()
 
+# Separate route for recommendations
+@app.route('/recommendations')
+def recommendations():
+    return render_template('recommendations.html')
 
+@app.route('/fetch_recommendations', methods=['GET'])
+def fetch_recommendations():    
+    recommend_list = session.get('recommend_list', [])
+    
+    recommended_list_merge = recommendation_anime(recommend_list)[:9]
+
+    anime_details = []
+    for anime_id in recommended_list_merge:
+        anime_detail = get_anime_details_by_anime_id(anime_id)
+        if anime_detail:
+            anime_details.append(anime_detail)
+
+    '''
+    anime_details = []
+    anime_detail = get_anime_details_by_anime_id(21)
+    anime_details.append(anime_detail)
+    '''
+
+    # Render the recommendations.html template with recommendations data
+    return anime_details
+
+
+@app.route('/filter_recommendations', methods=['GET'])
+def filter_recommendations():
+    recommend_list = session.get('recommend_list', [])
+    genre = request.args.get('genre', '')
+    type_ = request.args.get('type', '')
+    recommendation_method = request.args.get('recommendation-method')
+    exclude = request.args.get('exclude-same-series')
+
+    anime_details= []
+
+    if recommendation_method == 'content-based':
+        if exclude:
+            recommended_list_content = recommandation_anime_content_based(recommend_list,1)
+        else: 
+            recommended_list_content = recommandation_anime_content_based(recommend_list)
+        for anime_id in recommended_list_content:
+            anime_detail = get_anime_details_by_anime_id(anime_id)
+            if anime_detail:
+                if genre and genre not in anime_detail['Genres']:
+                    continue
+                if type_ and type_ != anime_detail['Type']:
+                    continue
+                anime_details.append(anime_detail)
+    elif recommendation_method == 'collaborative-filtering':
+        if exclude:
+            recommended_list_collab = recommandation_anime_collab_based(recommend_list,1)
+        else: 
+            recommended_list_collab = recommandation_anime_collab_based(recommend_list)
+        for anime_id in recommended_list_collab:
+            anime_detail = get_anime_details_by_anime_id(anime_id)
+            if anime_detail:
+                if genre and genre not in anime_detail['Genres']:
+                    continue
+                if type_ and type_ != anime_detail['Type']:
+                    continue
+                anime_details.append(anime_detail)
+    elif recommendation_method == 'merge':
+        if exclude:
+            recommended_list_merge = recommendation_anime(recommend_list,1)
+        else: 
+            recommended_list_merge = recommendation_anime(recommend_list)
+        for anime_id in recommended_list_merge:
+            anime_detail = get_anime_details_by_anime_id(anime_id)
+            if anime_detail:
+                if genre and genre not in anime_detail['Genres']:
+                    continue
+                if type_ and type_ != anime_detail['Type']:
+                    continue
+                anime_details.append(anime_detail)
+
+    return anime_details[:9]
+
+
+
+'''
 # Separate route for recommendations
 @app.route('/recommendations', methods=['GET'])
 def recommendations():
@@ -175,6 +256,7 @@ def recommendations2():
                     anime_details.append(anime_detail)
 
         return render_template('recommendations2.html', recommended_list=anime_details)
+'''
 
 @app.route('/search' , methods=['GET'])
 def search():

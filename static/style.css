@@ -453,15 +453,21 @@ select {
 }
 
 #container-recommendation { 
-    display: flex; 
+    display: flex;
+    flex-wrap: wrap; /* Allow elements to wrap to the next line */
 }
 
-#filter-section-recommendation { 
+#filter-section-recommendation {
+    text-align: center;
+}
+
+#filter-card-recommendation { 
     display: flex;
     align-items: center; /* Centre les éléments verticalement */
     width: 20%;
     margin-top: 5vh; 
-    margin-left: 5vh; 
+    margin-left: 5vh;
+    order: 2; /* Change the order to display it on the right */
 }
 
 #filter-form-recommendation {
@@ -479,6 +485,7 @@ select {
 #result-section-recommendation { 
     width: 80%; 
     margin-left: 2vh;
+    order: 1; /* Change the order to display it on the left */
 }
 
 .card-recommendation {
@@ -545,5 +552,47 @@ select {
     margin-left: 9.4vh;
     width: 15vh;
 }
+
+.loading-state {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+    z-index: 9999; /* Ensure it's above other content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#loading {
+    width: 80px;
+    height: 80px;
+    border: 6px solid rgba(255, 255, 255, 0.2);
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 20px;
+}
+
+#loading-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 
 
