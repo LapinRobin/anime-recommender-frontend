@@ -4,5 +4,3 @@
 __pycache__/
 .env
 .DS_Store
-/Chatbot/__pycache__/
-/Recommendation/__pycache__/

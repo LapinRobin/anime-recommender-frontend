@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+﻿from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -21,6 +21,8 @@ from sklearn.metrics.pairwise import linear_kernel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
 from Chatbot.general_chatbot import list_to_string, tool_example_to_messages, Data, Anime
+
+from Recommendation.main import *
 
 app = Flask(__name__)
 app.secret_key = 'secret'
@@ -69,12 +71,73 @@ def get_anime_details_by_mod_name(mod_name):
     return anime.iloc[0].to_dict()
 
 
-# Separate route for recommendations
-@app.route('/recommendations')
-def recommendations():
-    recommand_list = session.get('recommand_list', [])
-    return render_template('recommendation.html', recommand_list=recommand_list)
+def get_anime_details_by_anime_id(anime_id):
+    anime = anime_parquet[anime_parquet['anime_id'] == anime_id]
+    if anime.empty:
+        return None
+    return anime.iloc[0].to_dict()
 
+
+# Separate route for recommendations
+@app.route('/recommendations', methods=['GET', 'POST'])
+def recommendations():
+    # TO REMOVE !!!!
+    return render_template('recommendations.html')
+    # END TO REMOVE
+    if request.method == 'GET':
+        # Calculate recommended lists only when accessed via GET method
+        recommend_list = session.get('recommend_list', [])
+        #anime_details = request.args.get('recommended_list')
+        #print("Je suis ici "+str(anime_details))
+        #if anime_details :
+            #print("Je suis ici ")
+
+        #print("liste de recommandation "+ str(recommend_list))
+        recommended_list_content = recommandation_anime_content_based(recommend_list)[:10]
+        recommended_list_collab = recommandation_anime_collab_based(recommend_list)[:10]
+        show_names(recommended_list_content , anime_parquet)
+        # Store the calculated lists in session variables
+        session['recommended_list_content'] = recommended_list_content
+        session['recommended_list_collab'] = recommended_list_collab
+
+        anime_details_collab = []
+        for anime_id in recommended_list_collab:
+            anime_detail_collab = get_anime_details_by_anime_id(anime_id)
+            if anime_detail_collab:
+                anime_details_collab.append(anime_detail_collab)
+
+        return render_template('recommendations.html', recommended_list=anime_details_collab)
+
+    elif request.method == 'POST':
+        # If accessed via POST method, retrieve the stored lists from session variables
+        print("bonjour")
+        recommended_list_content = session.get('recommended_list_content', [])
+        recommended_list_collab = session.get('recommended_list_collab', [])
+
+        # Apply filtering based on form data
+        recommendation_method = request.form.get('recommendation-method')
+        exclude_same_series = request.form.get('exclude-same-series') == 'exclude-same-series'
+        print("recommended "+recommendation_method)
+        if recommendation_method == 'content-based':
+            recommended_list = recommended_list_content
+        elif recommendation_method == 'collaborative-filtering':
+            recommended_list = recommended_list_collab
+        anime_details = []
+        for anime_id in recommended_list:
+            anime_detail = get_anime_details_by_anime_id(anime_id)
+            if anime_detail:
+                anime_details.append(anime_detail)
+        print(recommended_list)
+        return redirect(url_for('recommendations_get', anime_details=anime_details))
+
+
+@app.route('/recommendations-get', methods=['GET'])
+def recommendations_get():
+    # Retrieve 'anime_details' from the query parameters if it exists
+    anime_details = request.args.get('anime_details')
+
+    # Your existing logic to handle the data passed to recommendations-get
+    return render_template('recommendations2.html', recommended_list=anime_details)
 
 @app.route('/search', methods=['GET'])
 def search():

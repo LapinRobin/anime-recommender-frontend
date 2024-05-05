@@ -286,26 +286,56 @@ a:active {
     justify-content: flex-start; /* Alignement vertical au début */
 }
 
+#container-filters{
+    display: flex;
+    justify-content: center; /* Centre les éléments horizontalement */
+    align-items: center; /* Centre les éléments verticalement */
+    flex-direction: column; /* Empile les éléments verticalement */
+    height: 100%; /* Assurez-vous que le conteneur prend la hauteur totale de son parent si nécessaire */
+    margin-top: 4vh;
+    margin-left:2vh;
+    width: 17%;
+}
+
 .filter-section {
     display: flex;
     justify-content: center; /* Centre les éléments horizontalement */
     align-items: center; /* Centre les éléments verticalement */
     flex-direction: column; /* Empile les éléments verticalement */
     height: 100%; /* Assurez-vous que le conteneur prend la hauteur totale de son parent si nécessaire */
-    
+    border: 1px solid #ccc;
+    border-radius: 1.2vh;
+    padding-left: 15vh;
+    padding-right: 15vh;
+    padding-top: 1vh;
+    padding-bottom: 20vh;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+#result-section{
+    margin-left:2vh;
+    width: 80%;
 }
 
 .title-search{
-    margin-top: 40px; 
+    margin-top: 2vh; 
     font-size: 4em; 
     font-weight: 600;
 }
 
-.filter-section-title{
-    margin-top: 20px; 
-    font-size: 1.5em; 
+.title-search-filters{
+    margin-top: 2vh; 
+    font-size: 2.5em; 
     font-weight: 600;
-    color: whitesmoke;
+    color: black;
+}
+
+.filter-section-title{
+    margin-top: 1.5vh; 
+    font-size: 1.3em; 
+    font-weight: 600;
+    color: black;
 }
 
 .filter-subsection{
@@ -316,7 +346,7 @@ a:active {
 }
 
 .custom-select {
-    margin-top: 2.9vh;
+    margin-top: 1.8vh;
     width: 15.7vh; 
     border-radius: 1.2vh;
 }
@@ -352,7 +382,7 @@ select {
     color: black; 
     background-color: rgb(246, 195, 255); 
     font-weight: bold;
-    margin-left: -3vh; 
+    margin-left: -7.5vh; 
     margin-top: 2vh;
     width: 15vh; 
     white-space: nowrap;
@@ -421,3 +451,99 @@ select {
 .submit-rating{
     margin-right: 1vh;
 }
+
+#container-recommendation { 
+    display: flex; 
+}
+
+#filter-section-recommendation { 
+    display: flex;
+    align-items: center; /* Centre les éléments verticalement */
+    width: 20%;
+    margin-top: 5vh; 
+    margin-left: 5vh; 
+}
+
+#filter-form-recommendation {
+    display: flex;       /* Active le modèle de boîte flexible pour le conteneur */
+    flex-direction: column; /* Empile les enfants verticalement */
+}
+
+.filter-subsection-recommendation{
+    display: flex;
+    gap: 1.1vh; /* Ajoute un petit espace entre le label et le select */
+    padding-top: 1.2vh; 
+    padding-left: 1.4vh; 
+}
+
+#result-section-recommendation { 
+    width: 80%; 
+    margin-left: 2vh;
+}
+
+.card-recommendation {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 1.2vh;
+    padding-right: 5vh;
+    padding-top: 1.2vh;
+    padding-bottom: 33vh;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.card-header-recommendation {
+    background-color: #007bff; /* Blue header */
+    color: white;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-bottom: 20px;
+}
+.form-card-recommendation {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    margin-bottom: 20px;
+}
+.form-card-recommendation label {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.form-card-recommendation input[type="radio"] {
+    margin-right: 10px;
+}
+
+.method-recommendation{
+    white-space: nowrap; 
+    font-size: 1.85vh;
+    font-weight: bold;
+    display: flex;
+    justify-content: center; /* Centre les éléments horizontalement dans le conteneur */
+    align-items: center; /* Centre les éléments verticalement */
+    gap: 1.1vh; /* Ajoute un petit espace entre le label et le select */
+    margin-top: 1.5vh; 
+    margin-left: 10vh; 
+}
+
+.form-check-recommendation{
+    margin-left: 1.2vh;
+}
+
+.form-check-label-recommendation{
+    width: 35vh;
+}
+
+.custom-select-recommendation {
+    display: flex;
+    width: 15.7vh; 
+    border-radius: 1.2vh;
+}
+
+.button-recommendation{
+    margin-left: 9.4vh;
+    width: 15vh;
+}
+
+
