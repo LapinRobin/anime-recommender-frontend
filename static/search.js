@@ -26,10 +26,10 @@ $(document).ready(function () {
         event.preventDefault(); // Prevent the normal form submission
         // let action = $(this).attr('action');
         // if not filter action
-        if (!$(this).attr('action').includes('filter')) {
-            let inputVal = $("input[name='Mod_name']").val();
-            window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
-        }
+        // if (!$(this).attr('action').includes('filter')) {
+        //     let inputVal = $("input[name='Mod_name']").val();
+        //     window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
+        // }
             // let inputVal = $("input[name='Mod_name']").val();
         // window.location.href = '/search?Mod_name=' + encodeURIComponent(inputVal);
 
