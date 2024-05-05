@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import re
 
-from subtitles_chatbot import files_embedding, contextualize_q_system_prompt, qa_system_prompt, Document
+from chatbot.subtitles_chatbot import files_embedding, contextualize_q_system_prompt, qa_system_prompt, Document
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
@@ -20,7 +20,7 @@ import joblib
 from sklearn.metrics.pairwise import linear_kernel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
-from general_chatbot import list_to_string, tool_example_to_messages, Data, Anime
+from chatbot.general_chatbot import list_to_string, tool_example_to_messages, Data, Anime
 
 app = Flask(__name__)
 app.secret_key = 'secret'
