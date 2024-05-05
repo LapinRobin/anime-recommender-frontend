@@ -1,7 +1,9 @@
+
 $(document).ready(function() {
-    $("input[name='Mod_name']").on('input', function() {
+    $("input[name='Mod_name']").off('input').on('input', function() {
         let inputVal = $(this).val();
-        if (inputVal.length > 1) { // Check to reduce unnecessary requests
+        let nbOptions = $('#anime-suggestions option').length;
+        if (inputVal.length > 1 && nbOptions < 1) { // Check to reduce unnecessary requests
             $.ajax({
                 url: "/autocomplete",
                 type: "GET",
