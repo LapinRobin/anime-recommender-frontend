@@ -16,7 +16,7 @@
         <h1><a href="/">Anime Atlas</a></h1>
         <h2><a href="/recommendations">Recommend me</a></h2>
         <h2><a href="/home-chatbot">Chat</a></h2>
-        <form action="/description" method="post">
+        <form action="/search" method="GET" class="search-form">
             <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
             <datalist id="anime-suggestions">
                 <!-- Suggestions will be dynamically filled here -->
@@ -31,16 +31,9 @@
     </div>
 
     <div id="container-recommendation">
-        <div id="result-section-recommendation">
-            <div class="center-text">
-                <h2 class="title-search">Results</h2>
-            </div>
-            <ul class="anime-list">
-            </ul>
-        </div>
+
 
         <div class= "filter-section-recommendation">
-            <h3>Not satisfied ? Filter more !</h3>
             <div id="filter-card-recommendation" class="card-recommendation">
                 <form id="filter-form-recommendation">
                     <div class="filter-subsection-recommendation">
@@ -94,11 +87,18 @@
                     </div>
 
                     <div class="form-check mb-3">
-                        <button type="submit" class="search-button button-recommendation">Apply filters</button>
+                        <button type="submit" class="filter-button button-recommendation">Apply filters</button>
                     </div>
 
                 </form>
             </div>
+        </div>
+        <div id="result-section-recommendation">
+            <div class="center-text">
+                <h2 class="title-search">Results</h2>
+            </div>
+            <ul class="anime-list">
+            </ul>
         </div>
     </div>
 
@@ -138,7 +138,7 @@
 
 <script>
     $(document).ready(function() {
-        $(".search-button").click(function(event) {
+        $(".filter-button").click(function(event) {
             event.preventDefault();
             $("#container-recommendation").css("display", "none");
 

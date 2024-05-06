@@ -453,15 +453,14 @@ select {
 }
 
 #container-recommendation { 
-    display: flex; 
+    display: flex;
 }
 
-#filter-section-recommendation { 
+.filter-section-recommendation {
     display: flex;
-    align-items: center; /* Centre les éléments verticalement */
     width: 20%;
-    margin-top: 5vh; 
-    margin-left: 5vh; 
+    margin-top: 5vh;
+    margin-left: 10vh;
 }
 
 #filter-form-recommendation {
