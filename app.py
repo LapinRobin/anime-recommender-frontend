@@ -104,7 +104,7 @@ def fetch_recommendations():
             anime_details.append(anime_detail)
 
     # Render the recommendations.html template with recommendations data
-    return anime_details[:9]
+    return anime_details[:8]
 
 
 @app.route('/filter_recommendations', methods=['GET'])
@@ -432,6 +432,146 @@ def get_response_general_chatbot():
     
     return response_msg.to_json()
 
+
+@app.route('/initialize_general_chatbot')
+def initialize_general_chatbot():
+    global llm_general, anime_list_general, vectorizer_general, matrix_general, num_samples_general, num_anime_rec_general, classification_prompt_general, anime_synopsis_generator_prompt_general, general_prompt, basic_chain_general, anime_chain_general, general_chain, examples_general, messages_general, full_chain_general
+    
+    if llm_general is None:
+        llm_general = ChatOpenAI(temperature=1, model="gpt-3.5-turbo-0613", max_tokens=512)
+    
+    if anime_list_general is None:
+        anime_list_general = pd.read_parquet('static/parquet/anime.parquet')
+    
+    if vectorizer_general is None:
+        vectorizer_general = joblib.load('static/pkl/tfidf_vectorizer.pkl')
+    
+    if matrix_general is None:
+        matrix_general = joblib.load('static/pkl/sparse_matrix.pkl')
+    
+    if num_samples_general is None:
+        num_samples_general = 50
+
+    if num_anime_rec_general is None:
+        num_anime_rec_general = 3
+    
+    if examples_general is None:
+        examples_general = [
+            (
+                "I want an anime about camping.",
+                Data(list=[
+                    Anime(
+                        description='A group of high school students go on a camping trip and learn about nature and '
+                                    'friendship.'),
+                    Anime(
+                        description='A girl goes on a solo camping trip to find solace and discover herself in the great '
+                                    'outdoors.')
+                ])
+            ),
+            (
+                "I want a romantic anime for girls.",
+                Data(list=[
+                    Anime(
+                        description='A heartwarming story about two high school students who fall in love and navigate the '
+                                    'ups and downs of their relationship.'),
+                    Anime(
+                        description='A girl moves to a new town and finds herself drawn to a mysterious boy with a tragic '
+                                    'past. Together, they discover the power of love and healing.')
+                ])
+            ),
+            (
+                "What is 2+2?",
+                Data(list=[])
+            ),
+            (
+                "Give me a fun fact",
+                Data(list=[])
+            ),
+
+        ]
+
+    if messages_general is None:
+        messages_general = []
+        for text, tool_call in examples_general:
+            messages_general.extend(
+                tool_example_to_messages({"input": text, "tool_calls": [tool_call]})
+            )
+
+    if classification_prompt_general is None:
+        classification_prompt_general = ChatPromptTemplate.from_template(
+            """
+                    Given the user request below, classify it as either being about `Anime or Story` or `Other`.
+                    
+                    Be more willing to classify `Anime or Story`
+                    Do not respond with more than one word.
+                    
+                    <request>
+                    {request}
+                    </request>
+                    
+                    Classification:
+                """
+        )
+
+    if anime_synopsis_generator_prompt_general is None:
+        anime_synopsis_generator_prompt_general = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    "You are an expert extraction algorithm. "
+                    "You only extract a maximum of 2 elements in the list"
+                    "You will need to extract a very short description of the anime without giving its name."
+                    "Only extract relevant information from the text. "
+                    "If you do not know the value of an attribute asked to extract, "
+                    "return null for the attribute's value."
+                    ,
+                ),
+                MessagesPlaceholder('examples'),
+                ("human", "{request}"),
+            ]
+        )
+
+    if general_prompt is None:
+        general_prompt = ChatPromptTemplate.from_template(
+            """Respond to the following question:
+
+            Request : {request}
+            Answer:
+            """
+        )
+
+    if basic_chain_general is None:
+        basic_chain_general = (
+                classification_prompt_general
+                | llm_general
+                | StrOutputParser()
+        )
+
+    if anime_chain_general is None:
+        anime_chain_general = (
+                anime_synopsis_generator_prompt_general
+                | llm_general.with_structured_output(schema=Data)
+                | RunnableLambda(recommend_anime_fictional_syn)
+                | RunnableLambda(list_to_string)
+                | llm_general
+                | StrOutputParser()
+        )
+
+    if general_chain is None:
+        general_chain = (
+                general_prompt
+                | llm_general
+                | StrOutputParser()
+        )
+
+    if full_chain_general is None:
+        full_chain_general = {"topic": basic_chain_general, "request": lambda x: x["request"], "examples": lambda x: x["examples"]} | RunnableLambda(
+            route
+        )
+
+    return jsonify({"status": "success"}), 200
+
+
 # Initialization of global variables used for the subtitles chatbot
 vectorstore_subtitles = None
 retriever_subtitles = None
@@ -460,12 +600,44 @@ def subtitles_chatbot():
 # Route to initialize and load the data of the subtitles chatbot
 @app.route('/embed_files')
 async def embed_files_api():
-    global vectorstore_subtitles, retriever_subtitles
+    global vectorstore_subtitles, retriever_subtitles, llm_subtitles, history_aware_retriever_subtitles, conversational_rag_chain_subtitles
     if vectorstore_subtitles is None:
         vectorstore_subtitles = files_embedding()
         try:
             if vectorstore_subtitles is not None:
                 retriever_subtitles = vectorstore_subtitles.as_retriever()
+                if not llm_subtitles:
+                    llm_subtitles = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
+
+                if not history_aware_retriever_subtitles:
+                    contextualize_q_prompt = ChatPromptTemplate.from_messages(
+                        [
+                            ("system", contextualize_q_system_prompt),
+                            MessagesPlaceholder("chat_history"),
+                            ("human", "{input}"),
+                        ]
+                    )
+                    history_aware_retriever_subtitles = create_history_aware_retriever(
+                        llm_subtitles, retriever_subtitles, contextualize_q_prompt
+                    )
+
+                if not conversational_rag_chain_subtitles:
+                    qa_prompt = ChatPromptTemplate.from_messages(
+                        [
+                            ("system", qa_system_prompt),
+                            MessagesPlaceholder("chat_history"),
+                            ("human", "{input}"),
+                        ]
+                    )
+                    question_answer_chain = create_stuff_documents_chain(llm_subtitles, qa_prompt)
+                    rag_chain = create_retrieval_chain(history_aware_retriever_subtitles, question_answer_chain)
+                    conversational_rag_chain_subtitles = RunnableWithMessageHistory(
+                        rag_chain,
+                        get_session_history,
+                        input_messages_key="input",
+                        history_messages_key="chat_history",
+                        output_messages_key="answer",
+                    )
                 return jsonify({"status": "success"}), 200
             else:
                 # Properly handle the case where vectorstore_subtitles is None
@@ -482,39 +654,6 @@ async def embed_files_api():
 async def get_response_subtitles_chatbot():
     global conversational_rag_chain_subtitles, llm_subtitles, history_aware_retriever_subtitles, session_id, chat_history_subtitles, chat_history_msgs_subtitles, store_subtitles
     user_message = request.json.get('message')
-
-    if not llm_subtitles:
-        llm_subtitles = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
-
-    if not history_aware_retriever_subtitles:
-        contextualize_q_prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", contextualize_q_system_prompt),
-                MessagesPlaceholder("chat_history"),
-                ("human", "{input}"),
-            ]
-        )
-        history_aware_retriever_subtitles = create_history_aware_retriever(
-            llm_subtitles, retriever_subtitles, contextualize_q_prompt
-        )
-
-    if not conversational_rag_chain_subtitles:
-        qa_prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", qa_system_prompt),
-                MessagesPlaceholder("chat_history"),
-                ("human", "{input}"),
-            ]
-        )
-        question_answer_chain = create_stuff_documents_chain(llm_subtitles, qa_prompt)
-        rag_chain = create_retrieval_chain(history_aware_retriever_subtitles, question_answer_chain)
-        conversational_rag_chain_subtitles = RunnableWithMessageHistory(
-            rag_chain,
-            get_session_history,
-            input_messages_key="input",
-            history_messages_key="chat_history",
-            output_messages_key="answer",
-        )
 
     chat_history_subtitles = get_session_history(session_id)
     chat_history_msgs_subtitles = await chat_history_subtitles.aget_messages()
