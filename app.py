@@ -134,7 +134,7 @@ def filter_recommendations():
                 continue
             anime_details.append(anime_detail)
 
-    return anime_details[:9]
+    return anime_details[:8]
 
 
 
