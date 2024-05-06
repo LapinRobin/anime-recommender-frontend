@@ -22,7 +22,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
 from Chatbot.general_chatbot import list_to_string, tool_example_to_messages, Data, Anime
 
-from Recommandation.main import *
+from Recommendation.main import *
 
 
 app = Flask(__name__)
@@ -85,11 +85,21 @@ def recommendations():
 @app.route('/fetch_recommendations', methods=['GET'])
 def fetch_recommendations():    
     recommend_list = session.get('recommend_list', [])
-    
-    recommended_list_merge = recommendation_anime(recommend_list)[:9]
 
+    recommended_list_content_tab = recommandation_anime_content_based(recommend_list)[:50]
+    recommended_list_collab_tab = recommandation_anime_collab_based(recommend_list)[:50]
+    recommended_list_merge_tab = recommandation_anime_merge(recommended_list_collab_tab, recommended_list_content_tab)[:50]
+
+    # Store the calculated lists in session variables
+    session['recommended_list_content_tab'] = recommended_list_content_tab.to_json()
+    session['recommended_list_collab_tab'] = recommended_list_collab_tab.to_json()
+    session['recommended_list_merge_tab'] = recommended_list_merge_tab.to_json()
+
+    recommandation_ids = sortMergeAndFormat(recommended_list_merge_tab)
+
+    
     anime_details = []
-    for anime_id in recommended_list_merge:
+    for anime_id in recommandation_ids:
         anime_detail = get_anime_details_by_anime_id(anime_id)
         if anime_detail:
             anime_details.append(anime_detail)
@@ -101,7 +111,7 @@ def fetch_recommendations():
     '''
 
     # Render the recommendations.html template with recommendations data
-    return anime_details
+    return anime_details[:9]
 
 
 @app.route('/filter_recommendations', methods=['GET'])
@@ -112,14 +122,18 @@ def filter_recommendations():
     recommendation_method = request.args.get('recommendation-method')
     exclude = request.args.get('exclude-same-series')
 
+    recommended_list_content_tab = pd.read_json(session.get('recommended_list_content_tab', None))
+    recommended_list_collab_tab =  pd.read_json(session.get('recommended_list_collab_tab', None))
+    recommended_list_merge_tab =  pd.read_json(session.get('recommended_list_merge_tab', None))
+
     anime_details= []
+    recommandation_ids = []
 
     if recommendation_method == 'content-based':
+        recommandation_ids = sortAndFormat(recommended_list_content_tab)
         if exclude:
-            recommended_list_content = recommandation_anime_content_based(recommend_list,1)
-        else: 
-            recommended_list_content = recommandation_anime_content_based(recommend_list)
-        for anime_id in recommended_list_content:
+            recommandation_ids = filter_anime_name_based(recommend_list, recommandation_ids)
+        for anime_id in recommandation_ids:
             anime_detail = get_anime_details_by_anime_id(anime_id)
             if anime_detail:
                 if genre and genre not in anime_detail['Genres']:
@@ -128,11 +142,10 @@ def filter_recommendations():
                     continue
                 anime_details.append(anime_detail)
     elif recommendation_method == 'collaborative-filtering':
+        recommandation_ids = sortAndFormat(recommended_list_collab_tab)
         if exclude:
-            recommended_list_collab = recommandation_anime_collab_based(recommend_list,1)
-        else: 
-            recommended_list_collab = recommandation_anime_collab_based(recommend_list)
-        for anime_id in recommended_list_collab:
+            recommandation_ids = filter_anime_name_based(recommend_list, recommandation_ids)
+        for anime_id in recommandation_ids:
             anime_detail = get_anime_details_by_anime_id(anime_id)
             if anime_detail:
                 if genre and genre not in anime_detail['Genres']:
@@ -141,11 +154,10 @@ def filter_recommendations():
                     continue
                 anime_details.append(anime_detail)
     elif recommendation_method == 'merge':
+        recommandation_ids = sortMergeAndFormat(recommended_list_merge_tab)
         if exclude:
-            recommended_list_merge = recommendation_anime(recommend_list,1)
-        else: 
-            recommended_list_merge = recommendation_anime(recommend_list)
-        for anime_id in recommended_list_merge:
+            recommandation_ids = filter_anime_name_based(recommend_list, recommandation_ids)
+        for anime_id in recommandation_ids:
             anime_detail = get_anime_details_by_anime_id(anime_id)
             if anime_detail:
                 if genre and genre not in anime_detail['Genres']:
