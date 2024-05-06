@@ -16,7 +16,7 @@
         <h1><a href="/">Anime Atlas</a></h1>
         <h2><a href="/recommendations">Recommend me</a></h2>
         <h2><a href="/home-chatbot">Chat</a></h2>
-        <form action="/description" method="post">
+        <form action="/search" method="get" class="search-form">
             <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
             <datalist id="anime-suggestions">
                 <!-- Suggestions will be dynamically filled here -->
@@ -29,6 +29,80 @@
         <div id="loading"></div>
         <div id="loading-text">Wait, we are processing your recommendations...</div>
     </div>
+
+
+    <div id="container-recommendation">
+        <div id="result-section-recommendation">
+            <div class="center-text">
+                <h2 class="title-search">Results</h2>
+            </div>
+            <ul class="anime-list">
+            </ul>
+        </div>
+
+        <div class= "filter-section-recommendation">
+            <div id="filter-card-recommendation" class="card-recommendation">
+                <form id="filter-form-recommendation">
+                    <div class="filter-subsection-recommendation">
+                        <label for="genre" class="bold-style">Genre&nbsp;:</label>
+                        <select class="form-select-recommendation custom-select-recommendation " name="genre" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
+                            <option value="">Select Genre</option>
+                            <option value="Action">Action</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Comedy">Comedy</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Music">Music</option>
+                            <option value="Romance">Romance</option>
+                            <option value="School">School</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Sports">Sports</option>
+                            <!-- Add more genres as needed -->
+                        </select>
+                    </div>
+                    <div class="filter-subsection-recommendation">
+                        <label for="type" class="bold-style">Type&nbsp;:</label>
+                        <select class="form-select-recommendation custom-select-recommendation " name="type" hx-get="/filter" hx-target="#result-section" hx-indicator="#loading" hx-trigger="change">
+                            <option value="">Select Type</option>
+                            <option value="TV">TV</option>
+                            <option value="Movie">Movie</option>
+                            <option value="Music">Music</option>
+                            <option value="ONA">ONA</option>
+                            <option value="OVA">OVA</option>
+                            <option value="Special">Special</option>
+                        </select>
+                    </div>
+                    <fieldset class="mb-3">
+                        <legend class="method-recommendation">Recommendation Method &nbsp;:</legend>
+                        <div class="form-check form-check-recommendation">
+                            <input class="form-check-input" type="radio" id="content-based" name="recommendation-method" value="content-based">
+                            <label class="form-check-label form-check-label-recommendation" for="content-based">Content-Based</label>
+                        </div>
+                        <div class="form-check form-check-recommendation">
+                            <input class="form-check-input" type="radio" id="collaborative-filtering" name="recommendation-method" value="collaborative-filtering">
+                            <label class="form-check-label form-check-label-recommendation" for="collaborative-filtering">Collaborative Filtering</label>
+                        </div>
+                        <div class="form-check form-check-recommendation">
+                            <input class="form-check-input" type="radio" id="merge" name="recommendation-method" value="merge" checked>
+                            <label class="form-check-label form-check-label-recommendation" for="merge">Merge (Content-Based and Collaborative Filtering)</label>
+                        </div>
+                    </fieldset>
+                    <div class="form-check mb-3 form-check-recommendation">
+                        <input class="form-check-input" type="checkbox" id="exclude-same-series" name="exclude-same-series" value="exclude-same-series">
+                        <label class="form-check-label form-check-label-recommendation" for="exclude-same-series">Exclude anime from the same series</label>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <button type="submit" class="search-button button-recommendation">Apply filters</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         $(document).ready(function() {
             $("#container-recommendation").css("display", "none");
