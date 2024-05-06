@@ -453,21 +453,15 @@ select {
 }
 
 #container-recommendation { 
-    display: flex;
-    flex-wrap: wrap; /* Allow elements to wrap to the next line */
+    display: flex; 
 }
 
-#filter-section-recommendation {
-    text-align: center;
-}
-
-#filter-card-recommendation { 
+#filter-section-recommendation { 
     display: flex;
     align-items: center; /* Centre les éléments verticalement */
     width: 20%;
     margin-top: 5vh; 
-    margin-left: 5vh;
-    order: 2; /* Change the order to display it on the right */
+    margin-left: 5vh; 
 }
 
 #filter-form-recommendation {
@@ -485,7 +479,6 @@ select {
 #result-section-recommendation { 
     width: 80%; 
     margin-left: 2vh;
-    order: 1; /* Change the order to display it on the left */
 }
 
 .card-recommendation {
@@ -553,6 +546,7 @@ select {
     width: 15vh;
 }
 
+
 .loading-state {
     position: fixed;
     top: 0;
@@ -593,6 +587,3 @@ select {
         transform: rotate(360deg);
     }
 }
-
-
-

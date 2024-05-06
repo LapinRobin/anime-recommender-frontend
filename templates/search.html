@@ -31,7 +31,9 @@
 <body>
 <div id="header">
     <h1><a href="/">Anime Atlas</a></h1>
-    <form action="/search" hx-post="/search">
+    <h2><a href="/recommendations">Recommend me</a></h2>
+    <h2><a href="/home-chatbot">Chat</a></h2>
+    <form action="/description" method="post">
         <input type="text" name="Mod_name" placeholder="Enter anime name" list="anime-suggestions">
         <datalist id="anime-suggestions">
             <!-- Suggestions will be dynamically filled here -->
@@ -104,7 +106,7 @@
         </div>
     </div>
     <div id="result-section">
-
+        
         <div id="loading" class="loading">Loading...</div>
         <div class="center-text">
             <h2 class="title-search">Search results</h2>

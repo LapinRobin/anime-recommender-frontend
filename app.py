@@ -22,7 +22,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
 from Chatbot.general_chatbot import list_to_string, tool_example_to_messages, Data, Anime
 
-from Recommandation.main import *
+from Recommendation.main import *
 
 
 app = Flask(__name__)
@@ -536,6 +536,7 @@ def get_response_general_chatbot():
         general_chain = (
                 general_prompt
                 | llm_general
+                | StrOutputParser()
         )
 
     if full_chain_general is None:
