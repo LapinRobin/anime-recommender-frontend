@@ -97,24 +97,13 @@ def filter_anime_name_based(fav_anime_list , recommended_anime_ids):
     top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
     return top_anime_ids
 
-def get_recommandation_merge(collab_tab, content_tab, filter_name=0):
+def recommandation_anime_merge(collab_tab, content_tab):
     similarities_tab = merge_score(collab_tab, content_tab)
-    sorted_df = similarities_tab.sort_values(by='total_score', ascending=False)
-    top_anime_ids = sorted_df.head(200)['anime_id'].tolist()
-
-    if filter_name == 1:
-        recommended_animes = []
-        for anime_id in top_anime_ids:
-            anime_name = anime_list.loc[anime_list['anime_id'] == anime_id, 'Name'].iloc[0]
-            recommended_animes.append({'anime_id': anime_id, 'Name': anime_name})
-
-        anime_names = pd.DataFrame(recommended_animes)
-        top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
-
-    return top_anime_ids[:200]
+    
+    return similarities_tab
 
 
-def recommandation_anime_content_based(fav_anime_list, filter_name=0):
+def recommandation_anime_content_based(fav_anime_list):
     """
         Generates a ranked list of anime recommendations based on the content of the favortie animes  and their ratings.
 
@@ -126,22 +115,11 @@ def recommandation_anime_content_based(fav_anime_list, filter_name=0):
         - the List of the 200 favorite animes
     """
     content_tab = get_recommandation_content_tab(fav_anime_list)
-    # print(content_tab)
-    sorted_df = content_tab.sort_values(by='recommend_score', ascending=False)
-    top_anime_ids = sorted_df.head(200)['anime_id'].tolist()
-    if filter_name == 1:
-        recommended_animes = []
-        for anime_id in top_anime_ids:
-            anime_name = anime_list.loc[anime_list['anime_id'] == anime_id, 'Name'].iloc[0]
-            recommended_animes.append({'anime_id': anime_id, 'Name': anime_name})
 
-        anime_names = pd.DataFrame(recommended_animes)
-        top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
-
-    return top_anime_ids[:200]
+    return content_tab
 
 
-def recommandation_anime_collab_based(fav_anime_list, filter_name=0):
+def recommandation_anime_collab_based(fav_anime_list):
     """
             Generates a ranked list of anime recommendations based on the ratings of the other users.
 
@@ -155,17 +133,17 @@ def recommandation_anime_collab_based(fav_anime_list, filter_name=0):
     collab_tab = get_recommandation_collab_tab(fav_anime_list)
     print(collab_tab.shape)
 
-    sorted_df = collab_tab.sort_values(by='recommend_score', ascending=False)
+    return collab_tab
+
+
+def sortAndFormat(tab):
+    sorted_df = tab.sort_values(by='recommend_score', ascending=False)
     top_anime_ids = sorted_df.head(200)['anime_id'].tolist()
-    if filter_name == 1:
-        recommended_animes = []
-        for anime_id in top_anime_ids:
-            anime_name = anime_list.loc[anime_list['anime_id'] == anime_id, 'Name'].iloc[0]
-            recommended_animes.append({'anime_id': anime_id, 'Name': anime_name})
-
-        anime_names = pd.DataFrame(recommended_animes)
-        top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
-
+    return top_anime_ids[:200]
+    
+def sortMergeAndFormat(tab):
+    sorted_df = tab.sort_values(by='total_score', ascending=False)
+    top_anime_ids = sorted_df.head(200)['anime_id'].tolist()
     return top_anime_ids[:200]
 
 
