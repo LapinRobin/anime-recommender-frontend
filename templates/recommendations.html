@@ -40,7 +40,6 @@
         </div>
 
         <div class= "filter-section-recommendation">
-            <h3>Not satisfied ? Filter more !</h3>
             <div id="filter-card-recommendation" class="card-recommendation">
                 <form id="filter-form-recommendation">
                     <div class="filter-subsection-recommendation">
@@ -73,28 +72,24 @@
                             <option value="Special">Special</option>
                         </select>
                     </div>
-                    <fieldset class="mb-3">
-                        <legend class="method-recommendation">Recommendation Method &nbsp;:</legend>
-                        <div class="form-check form-check-recommendation">
-                            <input class="form-check-input" type="radio" id="content-based" name="recommendation-method" value="content-based">
-                            <label class="form-check-label form-check-label-recommendation" for="content-based">Content-Based</label>
-                        </div>
-                        <div class="form-check form-check-recommendation">
-                            <input class="form-check-input" type="radio" id="collaborative-filtering" name="recommendation-method" value="collaborative-filtering">
-                            <label class="form-check-label form-check-label-recommendation" for="collaborative-filtering">Collaborative Filtering</label>
-                        </div>
-                        <div class="form-check form-check-recommendation">
-                            <input class="form-check-input" type="radio" id="merge" name="recommendation-method" value="merge" checked>
-                            <label class="form-check-label form-check-label-recommendation" for="merge">Merge (Content-Based and Collaborative Filtering)</label>
-                        </div>
-                    </fieldset>
-                    <div class="form-check mb-3 form-check-recommendation">
+                    <div class="form-check mb-3 form-check-recommendation" style="margin-top: 20px;">
                         <input class="form-check-input" type="checkbox" id="exclude-same-series" name="exclude-same-series" value="exclude-same-series">
                         <label class="form-check-label form-check-label-recommendation" for="exclude-same-series">Exclude anime from the same series</label>
                     </div>
+                    <div class="form-check form-check-recommendation" id="merge-slider-container" style="margin-top: 20px; margin-left: -15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Collaborative</span>
+                            <div style="display: flex; align-items: center;">
+                                <input type="range" class="form-range" id="merge-slider" name="merge-slider" min="0" max="1" step="0.01" value="0.5" style="width: 150px;">
+                            </div>
+                            <span>Content</span>
+                        </div>
+                        <span id="merge-slider-value" name="values">0.5</span>
+                        <input type="hidden" id="merge-slider-value-input" name="merge-slider-value" value="0.5">
+                    </div>
 
                     <div class="form-check mb-3">
-                        <button type="submit" class="search-button button-recommendation">Apply filters</button>
+                        <button type="submit" class="search-button button-recommendation" style="margin-top: 50px;">Apply filters</button>
                     </div>
 
                 </form>
@@ -179,6 +174,16 @@
                     console.error(error);
                 }
             });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Update the slider value display as the slider is moved
+        $('#merge-slider').on('input', function() {
+            $('#merge-slider-value').text(this.value);
+            $('#merge-slider-value-input').val($(this).val());
         });
     });
 </script>

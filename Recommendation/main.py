@@ -45,7 +45,7 @@ def show_names(anime_ids, anime_list):
     print(pd.DataFrame(animes))
 
 
-def merge_score(collab_tab, content_tab):
+def merge_score(collab_tab, content_tab, parameter):
     final_tab = pd.merge(content_tab, collab_tab, on='anime_id', suffixes=('_content', '_collab'), how='left')
     final_tab['recommend_score_collab'] = final_tab['recommend_score_collab'].fillna(0)
     final_tab['recommend_score_content'] = (final_tab['recommend_score_content'] - final_tab[
@@ -54,7 +54,7 @@ def merge_score(collab_tab, content_tab):
     final_tab['recommend_score_collab'] = (final_tab['recommend_score_collab'] - final_tab[
         'recommend_score_collab'].min()) / (final_tab['recommend_score_collab'].max() - final_tab[
         'recommend_score_collab'].min())
-    final_tab['total_score'] = final_tab['recommend_score_content'] + final_tab['recommend_score_collab']
+    final_tab['total_score'] = parameter*final_tab['recommend_score_content'] + (1-parameter)*final_tab['recommend_score_collab']
     return final_tab
 
 
@@ -97,8 +97,8 @@ def filter_anime_name_based(fav_anime_list , recommended_anime_ids):
     top_anime_ids = filter_anime_name(fav_anime_list, anime_names)
     return top_anime_ids
 
-def recommandation_anime_merge(collab_tab, content_tab):
-    similarities_tab = merge_score(collab_tab, content_tab)
+def recommandation_anime_merge(collab_tab, content_tab, parameter=0.5):
+    similarities_tab = merge_score(collab_tab, content_tab, parameter)
     
     return similarities_tab
 
