@@ -9,7 +9,17 @@ anime_list = pd.read_parquet('static/parquet/anime.parquet')
 
 
 def filter_anime_name(fav_anime_list, recommended_animes):
+    """
+            Filters the anime_list based on their anime. If a recommended anime is contained
+            in one of the series of fav_anime_list , it is removed
 
+            Parameters:
+            - fav_anime_list (Python List): a list containing the ids of the favorite animes and their rating.
+            -recommended_animes (List of Anime_ids) : a list containing the recommended_animes
+
+            Returns:
+            - the List of the favorite animes filtered
+            """
     fav_anime_ids = [anime_id for anime_id, _ in fav_anime_list]
     fav_anime_list_names = anime_list[anime_list['anime_id'].isin(fav_anime_ids)]['Name']
     recommended_animes_names = recommended_animes['Name']
@@ -79,17 +89,6 @@ def recommendation_anime(fav_anime_list, filter_name=0):
     return top_anime_ids
 
 def filter_anime_name_based(fav_anime_list , recommended_anime_ids):
-    """
-        Filters the anime_list based on their anime. If a recommended anime is contained
-        in one of the series of fav_anime_list , it is removed
-
-        Parameters:
-        - fav_anime_list (Python List): a list containing the ids of the favorite animes and their rating.
-        -recommended_animes (List of Anime_ids) : a list containing the recommended_animes
-
-        Returns:
-        - the List of the favorite animes filtered
-    """
     recommended_animes = []
     for anime_id in recommended_anime_ids:
         anime_name = anime_list.loc[anime_list['anime_id'] == anime_id, 'Name'].iloc[0]
