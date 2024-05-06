@@ -1,5 +1,20 @@
+
+#  Anime Recommender
+
+
+
+## Overview
+In this project, we aim to do Anime Recommandation. It was carried out as part of the Smart project. To check for the details please check out the file 'Projet_SMART2024.pdf' present in the same folder
+
+
+### Steps to Use the Application
+
 In order to launch the program:
 
-1, Install requirements.txt using pip install requirements.txt
+- Clone the repository onto your own local machine
 
-2, Launch app.py
+- Open command prompt/terminal in the cloned repository 
+
+- Install requirements.txt using pip install requirements.txt
+
+- Launch app.py
