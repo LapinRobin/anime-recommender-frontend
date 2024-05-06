@@ -107,20 +107,32 @@
                 success: function(data) {
                     $(".loading-state").remove();
                     // Append fetched recommendations to the result section
-                    var htmlContent = '';
-                    data.forEach(function(anime) {
-                        htmlContent += '<li class="anime-item">';
-                        htmlContent += '<a href="/description?Mod_name=' + encodeURIComponent(anime['Mod_name']) + '" style="display: block;">';
-                        htmlContent += '<div class="card-overlay">';
-                        htmlContent += '<strong style="font-size: 1.2em;">' + anime['Name'] + '</strong>';
-                        htmlContent += '<br></br>';
-                        htmlContent += '<div class="rating-container">';
-                        htmlContent += '<img src="' + anime['Image URL'] + '" alt="' + anime['Name'] + '" class="anime-image">';
-                        htmlContent += '</div>';
-                        htmlContent += '</div>';
-                        htmlContent += '</a>';
-                        htmlContent += '</li>';
-                    });
+                    console.log(data)
+                    console.log(data.length)
+                    if (data.length === 0) {
+                        //console.log("bonjour")
+
+                         var noDataContent = '<div class="no-results" style="text-align: center;">';
+                         noDataContent += '<img src="/path_to_your_image/anime_not_found.png" alt="Anime not found" style="max-width: 100%; height: auto;">';
+                        $("#result-section-recommendation .anime-list").html(noDataContent);
+                    }else{
+                        var htmlContent = '';
+                        data.forEach(function(anime) {
+                            htmlContent += '<li class="anime-item">';
+                            htmlContent += '<a href="/description?Mod_name=' + encodeURIComponent(anime['Mod_name']) + '" style="display: block;">';
+                            htmlContent += '<div class="card-overlay">';
+                            htmlContent += '<strong style="font-size: 1.2em;">' + anime['Name'] + '</strong>';
+                            htmlContent += '<br></br>';
+                            htmlContent += '<div class="rating-container">';
+                            htmlContent += '<img src="' + anime['Image URL'] + '" alt="' + anime['Name'] + '" class="anime-image">';
+                            htmlContent += '</div>';
+                            htmlContent += '</div>';
+                            htmlContent += '</a>';
+                            htmlContent += '</li>';
+                        });
+                        $("#result-section-recommendation .anime-list").html(htmlContent);
+                    }
+
                     $("#result-section-recommendation .anime-list").html(htmlContent);
                     $("#container-recommendation").css("display", "block");
                 },
@@ -152,22 +164,30 @@
                 success: function(data) {
                     $(".loading-state").remove();
                     // Append fetched recommendations to the result section
-                    var htmlContent = '';
-                    console.log(data)
-                    data.forEach(function(anime) {
-                        htmlContent += '<li class="anime-item">';
-                        htmlContent += '<a href="/description?Mod_name=' + encodeURIComponent(anime['Mod_name']) + '" style="display: block;">';
-                        htmlContent += '<div class="card-overlay">';
-                        htmlContent += '<strong style="font-size: 1.2em;">' + anime['Name'] + '</strong>';
-                        htmlContent += '<br></br>';
-                        htmlContent += '<div class="rating-container">';
-                        htmlContent += '<img src="' + anime['Image URL'] + '" alt="' + anime['Name'] + '" class="anime-image">';
-                        htmlContent += '</div>';
-                        htmlContent += '</div>';
-                        htmlContent += '</a>';
-                        htmlContent += '</li>';
-                    });
-                    $("#result-section-recommendation .anime-list").html(htmlContent);
+                    if (data.length === 0) {
+                    // If no data is returned, display a message
+                        var noDataContent = '<div class="no-results" >';
+                        noDataContent += '<img src="../static/images/Anime_not_found.png" alt="Anime not found" >';
+                        noDataContent += '</div>';
+                        $("#result-section-recommendation .anime-list").html(noDataContent);
+                    }else {
+                        var htmlContent = '';
+                        //console.log(data)
+                        data.forEach(function (anime) {
+                            htmlContent += '<li class="anime-item">';
+                            htmlContent += '<a href="/description?Mod_name=' + encodeURIComponent(anime['Mod_name']) + '" style="display: block;">';
+                            htmlContent += '<div class="card-overlay">';
+                            htmlContent += '<strong style="font-size: 1.2em;">' + anime['Name'] + '</strong>';
+                            htmlContent += '<br></br>';
+                            htmlContent += '<div class="rating-container">';
+                            htmlContent += '<img src="' + anime['Image URL'] + '" alt="' + anime['Name'] + '" class="anime-image">';
+                            htmlContent += '</div>';
+                            htmlContent += '</div>';
+                            htmlContent += '</a>';
+                            htmlContent += '</li>';
+                        });
+                        $("#result-section-recommendation .anime-list").html(htmlContent);
+                    }
                     $("#container-recommendation").css("display", "block");
                 },
                 error: function(xhr, status, error) {
