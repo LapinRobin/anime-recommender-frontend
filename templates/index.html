@@ -13,6 +13,19 @@
     <script type="text/javascript" src="{{url_for('static', filename='search.js')}}"></script>
 </head>
 
+<script>
+    const embedFilesSubtitlesChatbot = async () => {
+        await fetch('/embed_files');
+    }
+
+    const initializeGeneraChatbot = async () => {
+        await fetch('/initialize_general_chatbot');
+    }
+
+    initializeGeneraChatbot()
+    embedFilesSubtitlesChatbot()
+</script>
+
 <body class="page-index">
     <div id="header">
         <h1><a href="/">Anime Atlas</a></h1>
