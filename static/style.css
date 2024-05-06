@@ -408,6 +408,24 @@ select {
     margin-top: 5vh
 }
 
+.no-results {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Takes full viewport height */
+        margin: 0;
+        margin-left : 15px;
+        padding: 0;
+}
+
+.no-results img {
+        max-width: 50%; /* Adjust image size as needed */
+        height: auto;
+        border-radius: 20px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: Adds shadow for better visibility */
+}
+
 .big-font{
     font-size: 4em;
 }
