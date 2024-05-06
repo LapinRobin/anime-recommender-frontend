@@ -63,53 +63,6 @@
         });
     </script>
 
-<script>
-    $(document).ready(function() {
-        $(".search-button").click(function(event) {
-            event.preventDefault();
-            $("#container-recommendation").css("display", "none");
-
-            var loadingStateDiv = $('<div class="loading-state"></div>');
-            var loadingDiv = $('<div id="loading"></div>');
-            loadingStateDiv.append(loadingDiv);
-            var loadingTextDiv = $('<div id="loading-text">Wait, we are processing your recommendations...</div>');
-            loadingStateDiv.append(loadingTextDiv);
-            $('body').append(loadingStateDiv);
-
-            var formData = $("#filter-form-recommendation").serialize();
-
-            $.ajax({
-                url: "/filter_recommendations?" + formData, // Pass form data as query parameters
-                type: "GET",
-                success: function(data) {
-                    $(".loading-state").remove();
-                    // Append fetched recommendations to the result section
-                    var htmlContent = '';
-                    console.log(data)
-                    data.forEach(function(anime) {
-                        htmlContent += '<li class="anime-item">';
-                        htmlContent += '<a href="/description?Mod_name=' + encodeURIComponent(anime['Mod_name']) + '" style="display: block;">';
-                        htmlContent += '<div class="card-overlay">';
-                        htmlContent += '<strong style="font-size: 1.2em;">' + anime['Name'] + '</strong>';
-                        htmlContent += '<br></br>';
-                        htmlContent += '<div class="rating-container">';
-                        htmlContent += '<img src="' + anime['Image URL'] + '" alt="' + anime['Name'] + '" class="anime-image">';
-                        htmlContent += '</div>';
-                        htmlContent += '</div>';
-                        htmlContent += '</a>';
-                        htmlContent += '</li>';
-                    });
-                    $("#result-section-recommendation .anime-list").html(htmlContent);
-                    $("#container-recommendation").css("display", "block");
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-    });
-</script>
-
     <div id="container-recommendation">
         <div id="result-section-recommendation">
             <div class="center-text">
